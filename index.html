@@ -1,0 +1,2143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Follow-up Register</title>
+<script>
+/* ===================== YOUR SETTINGS (fill these two in) =====================
+   From Microsoft Entra admin center › App registrations › Follow-up Register › Overview */
+window.MS_CONFIG = {
+  clientId: 'PASTE-APPLICATION-CLIENT-ID-HERE',
+  tenantId: 'PASTE-DIRECTORY-TENANT-ID-HERE'
+};
+/* ============================================================================ */
+</script>
+<style>
+/* Layout: one register sheet — sticky header, filter strip, table on wide screens / cards on narrow,
+   editor slides in from the right. Paper ink-pad stays paper in both themes. */
+:root{
+  --bg:#F2F4F8; --surface:#FFFFFF; --sunk:#E9EDF3; --fg:#162033; --muted:#596579; --line:#D7DDE7; --line-strong:#B9C2D1;
+  --accent:#1F45C9; --accent-fg:#FFFFFF; --accent-soft:#E4EAFB;
+  --person:#0A7259; --person-soft:#DDF2EB; --project:#93400F; --project-soft:#F8E6DA;
+  --task:#36435C; --task-soft:#E4E9F1; --link:#6A3C9E; --link-soft:#EEE5F8;
+  --st-open:#1F45C9; --st-open-soft:#E4EAFB; --st-prog:#9A5A00; --st-prog-soft:#FBEBD3;
+  --st-wait:#6A3C9E; --st-wait-soft:#EEE5F8; --st-done:#2A7232; --st-done-soft:#DFF0DF;
+  --danger:#B3261E; --danger-soft:#FBE3E1; --ok:#2A7232;
+  --paper:#FBFCFE; --paper-rule:#DCE5F3; --paper-edge:#C9D3E3;
+  --shadow:0 10px 40px rgba(18,28,48,.18);
+  --f-display:"Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --f-body:"Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --f-mono:ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+  --r:8px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0E121A; --surface:#161C27; --sunk:#1C2431; --fg:#E5EAF3; --muted:#98A3B6; --line:#283244; --line-strong:#3A475E;
+  --accent:#86A2FF; --accent-fg:#0B1022; --accent-soft:#1D2A4F;
+  --person:#5DD3B2; --person-soft:#12302A; --project:#F2A679; --project-soft:#3A2417;
+  --task:#B7C1D5; --task-soft:#232C3B; --link:#C9A9F2; --link-soft:#2C2140;
+  --st-open:#86A2FF; --st-open-soft:#1D2A4F; --st-prog:#F0B862; --st-prog-soft:#3A2A10;
+  --st-wait:#C9A9F2; --st-wait-soft:#2C2140; --st-done:#7FCB86; --st-done-soft:#173119;
+  --danger:#FF8A80; --danger-soft:#3D1715; --ok:#7FCB86;
+  --paper:#FBFCFE; --paper-rule:#DCE5F3; --paper-edge:#3A475E;
+  --shadow:0 10px 40px rgba(0,0,0,.5); color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0E121A; --surface:#161C27; --sunk:#1C2431; --fg:#E5EAF3; --muted:#98A3B6; --line:#283244; --line-strong:#3A475E;
+  --accent:#86A2FF; --accent-fg:#0B1022; --accent-soft:#1D2A4F;
+  --person:#5DD3B2; --person-soft:#12302A; --project:#F2A679; --project-soft:#3A2417;
+  --task:#B7C1D5; --task-soft:#232C3B; --link:#C9A9F2; --link-soft:#2C2140;
+  --st-open:#86A2FF; --st-open-soft:#1D2A4F; --st-prog:#F0B862; --st-prog-soft:#3A2A10;
+  --st-wait:#C9A9F2; --st-wait-soft:#2C2140; --st-done:#7FCB86; --st-done-soft:#173119;
+  --danger:#FF8A80; --danger-soft:#3D1715; --ok:#7FCB86;
+  --paper:#FBFCFE; --paper-rule:#DCE5F3; --paper-edge:#3A475E;
+  --shadow:0 10px 40px rgba(0,0,0,.5); color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--fg); font-family:var(--f-body); font-size:15px; line-height:1.45; padding-inline:16px; -webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit; color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.app{max-width:1440px; margin:0 auto; padding-block:12px 64px; display:flex; flex-direction:column; gap:12px}
+
+/* Header */
+.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:20; background:var(--bg); padding-block:10px; display:flex; flex-wrap:wrap; align-items:center; gap:12px; justify-content:space-between; border-bottom:1px solid var(--line)}
+.brand{display:flex; align-items:baseline; gap:12px; min-width:0}
+.brand h1{font-family:var(--f-display); font-weight:700; font-size:24px; letter-spacing:-.01em; margin:0; text-wrap:balance}
+.sync{font-size:12px; color:var(--muted); display:inline-flex; align-items:center; gap:6px; white-space:nowrap}
+.sync::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--line-strong)}
+.sync.ok::before{background:var(--ok)} .sync.busy::before{background:var(--st-prog)} .sync.local::before{background:var(--st-prog)} .sync.err::before{background:var(--danger)}
+.top-actions{display:flex; gap:8px; flex:1 1 360px; justify-content:flex-end; min-width:0}
+.search{flex:1 1 220px; max-width:380px; min-width:0; height:40px; border:1px solid var(--line); background:var(--surface); border-radius:var(--r); padding:0 12px}
+.btn{height:40px; padding:0 14px; border-radius:var(--r); border:1px solid var(--line); background:var(--surface); font-weight:500; white-space:nowrap; display:inline-flex; align-items:center; gap:6px}
+.btn:hover{border-color:var(--line-strong)}
+.btn.primary{background:var(--accent); color:var(--accent-fg); border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent}
+.btn.small{height:32px; padding:0 10px; font-size:13px}
+.btn.danger{color:var(--danger); border-color:var(--danger-soft); background:var(--danger-soft)}
+.btn[disabled]{opacity:.5; cursor:not-allowed}
+
+/* View tabs */
+.views{display:flex; gap:4px; overflow-x:auto; scrollbar-width:none}
+.views button{border:0; background:transparent; padding:8px 12px; border-radius:var(--r); color:var(--muted); font-weight:500; white-space:nowrap}
+.views button[aria-selected="true"]{background:var(--surface); color:var(--fg); box-shadow:0 0 0 1px var(--line)}
+.views .count{font-family:var(--f-mono); font-size:12px; color:var(--muted); margin-left:4px}
+
+.banner{background:var(--st-prog-soft); color:var(--fg); border-radius:var(--r); padding:10px 14px; font-size:14px}
+
+/* Toolbar */
+.toolbar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between}
+.filters{display:flex; flex-wrap:wrap; gap:6px}
+.fchip{height:32px; padding:0 12px; border-radius:16px; border:1px solid var(--line); background:var(--surface); font-size:13px; font-weight:500; display:inline-flex; align-items:center; gap:6px}
+.fchip .n{font-family:var(--f-mono); font-size:12px; color:var(--muted)}
+.fchip[aria-pressed="true"]{background:var(--fg); color:var(--bg); border-color:var(--fg)}
+.fchip[aria-pressed="true"] .n{color:inherit; opacity:.75}
+.tools{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.toggle{display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--muted); padding:0 6px; height:32px; cursor:pointer}
+.toggle input{accent-color:var(--accent); width:16px; height:16px}
+
+/* Table */
+.sheet{background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow-x:auto}
+table{border-collapse:collapse; width:100%; min-width:1200px}
+th{position:sticky; top:0; background:var(--sunk); text-align:left; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:600; padding:9px 12px; border-bottom:1px solid var(--line); white-space:nowrap}
+td{padding:12px; border-bottom:1px solid var(--line); vertical-align:top; font-size:14px}
+tbody tr{cursor:pointer}
+tbody tr:hover td{background:color-mix(in srgb, var(--accent-soft) 45%, transparent)}
+tbody tr:last-child td{border-bottom:0}
+tr.closed td{color:var(--muted)}
+tr.closed .c-desc .rt{text-decoration:line-through; text-decoration-color:var(--line-strong)}
+.c-sr{font-family:var(--f-mono); font-variant-numeric:tabular-nums; color:var(--muted); width:56px; white-space:nowrap}
+.c-proj{width:170px}
+.c-desc{min-width:260px}
+.c-person{width:170px}
+.c-status{width:140px}
+.c-rem{min-width:200px}
+.rt{overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden}
+.dash{color:var(--line-strong)}
+.when{display:block; margin-top:4px; font-family:var(--f-mono); font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums}
+.age{color:var(--st-prog)}
+.ink-thumb{display:block; margin-top:6px; max-width:100%; height:auto; max-height:84px; background:var(--paper); border:1px solid var(--paper-edge); border-radius:6px; padding:4px}
+
+/* Chips */
+.chip{display:inline-flex; align-items:center; gap:4px; max-width:100%; vertical-align:baseline; padding:1px 7px 1px 5px; border-radius:5px; font-size:.92em; font-weight:500; line-height:1.5; border:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; user-select:none; -webkit-user-select:none}
+button.chip{cursor:pointer}
+button.chip:hover{filter:brightness(.96)}
+.chip svg{flex:none; width:12px; height:12px}
+.t-person{background:var(--person-soft); color:var(--person)}
+.t-project{background:var(--project-soft); color:var(--project)}
+.t-task{background:var(--task-soft); color:var(--task)}
+.t-link,.t-file{background:var(--link-soft); color:var(--link)}
+.t-gone{background:var(--sunk); color:var(--muted); text-decoration:line-through}
+
+/* Status */
+.pill{display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 10px; border-radius:13px; font-size:12.5px; font-weight:600; white-space:nowrap}
+.pill::before{content:""; width:7px; height:7px; border-radius:50%; background:currentColor}
+.st-open{background-color:var(--st-open-soft); color:var(--st-open)}
+.st-prog{background-color:var(--st-prog-soft); color:var(--st-prog)}
+.st-wait{background-color:var(--st-wait-soft); color:var(--st-wait)}
+.st-done{background-color:var(--st-done-soft); color:var(--st-done)}
+.status-sel{appearance:none; -webkit-appearance:none; border:0; height:28px; padding:0 26px 0 12px; border-radius:14px; font-size:12.5px; font-weight:600; cursor:pointer; background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%); background-position:calc(100% - 13px) 12px, calc(100% - 9px) 12px; background-size:4px 4px; background-repeat:no-repeat; max-width:100%}
+
+/* Cards (narrow) */
+.cards{display:flex; flex-direction:column; gap:10px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:10px; cursor:pointer}
+.card.closed{opacity:.72}
+.card-top{display:flex; justify-content:space-between; align-items:center; gap:8px}
+.card-top .sr{font-family:var(--f-mono); color:var(--muted); font-size:13px}
+.card-top .left{display:flex; align-items:center; gap:8px; min-width:0}
+.card .desc{min-width:0}
+.kv{display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:13.5px; align-items:baseline}
+.kv dt{color:var(--muted); font-size:11px; letter-spacing:.06em; text-transform:uppercase}
+.kv dd{margin:0; min-width:0}
+.kv .when{display:inline; margin:0 0 0 6px}
+
+/* Empty / loading */
+.empty{background:var(--surface); border:1px dashed var(--line-strong); border-radius:10px; padding:40px 20px; text-align:center; display:flex; flex-direction:column; gap:10px; align-items:center}
+.empty h2{font-family:var(--f-display); font-size:20px; margin:0}
+.empty p{margin:0; color:var(--muted); max-width:52ch}
+
+/* Directory */
+.dir-head{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between}
+.dir-head h2{font-family:var(--f-display); font-size:20px; margin:0}
+.addrow{display:flex; gap:6px; flex:1 1 280px; max-width:420px}
+.addrow input{flex:1; min-width:0; height:40px; border:1px solid var(--line); background:var(--surface); border-radius:var(--r); padding:0 12px}
+.dir-list{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:10px}
+.dir-item{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px; text-align:left; display:flex; flex-direction:column; gap:6px; min-width:0}
+.dir-item:hover{border-color:var(--line-strong)}
+.dir-item .nm{font-weight:600; font-size:15px; overflow-wrap:anywhere; display:flex; align-items:center; gap:6px}
+.dir-item .meta{font-size:12.5px; color:var(--muted); font-family:var(--f-mono)}
+
+/* Drawer */
+.scrim{position:fixed; inset:0; background:rgba(10,16,28,.42); z-index:40}
+.drawer{position:fixed; top:0; right:0; bottom:0; width:min(720px,100%); background:var(--bg); z-index:50; display:flex; flex-direction:column; box-shadow:var(--shadow); padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px)}
+.drawer-head{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; border-bottom:1px solid var(--line); background:var(--surface)}
+.drawer-head h2{font-family:var(--f-display); font-size:20px; margin:0; overflow-wrap:anywhere}
+.eyebrow{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600}
+.head-actions{display:flex; gap:8px}
+.drawer-body{overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:18px; flex:1; -webkit-overflow-scrolling:touch}
+.field{display:flex; flex-direction:column; gap:6px; min-width:0}
+.field > .lbl{font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); font-weight:600; display:flex; justify-content:space-between; gap:8px}
+.field .hint{font-size:12px; color:var(--muted); text-transform:none; letter-spacing:0; font-weight:400}
+.row2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+@media (max-width:560px){ .row2{grid-template-columns:1fr} }
+.pair{display:flex; gap:8px; align-items:stretch; flex-wrap:wrap}
+.pair .picker{flex:1 1 160px}
+.date-in{height:44px; border:1px solid var(--line); background:var(--surface); border-radius:var(--r); padding:0 10px; font-family:var(--f-mono); font-size:13.5px; flex:0 1 160px; min-width:0}
+
+.picker{min-height:44px; border:1px solid var(--line); background:var(--surface); border-radius:var(--r); display:flex; align-items:center; gap:6px; padding:4px 8px; min-width:0}
+.picker:focus-within{border-color:var(--accent)}
+.picker input{border:0; outline:0; background:transparent; flex:1; min-width:0; height:34px}
+.picker .chip{font-size:14px}
+.pk-x{border:0; background:transparent; color:var(--muted); width:28px; height:28px; border-radius:6px; font-size:18px; line-height:1}
+.pk-x:hover{background:var(--sunk)}
+
+.rich{min-height:88px; border:1px solid var(--line); background:var(--surface); border-radius:var(--r); padding:10px 12px; outline:0; line-height:1.6; overflow-wrap:anywhere; white-space:pre-wrap}
+.rich:focus{border-color:var(--accent)}
+.rich:empty::before{content:attr(data-ph); color:var(--muted)}
+.rich .chip{font-size:14px}
+
+.seg{display:flex; flex-wrap:wrap; gap:6px}
+.seg button{height:36px; padding:0 14px; border-radius:18px; border:1px solid var(--line); background:var(--surface); font-weight:500; font-size:13.5px}
+.seg button[aria-pressed="true"]{border-color:transparent}
+
+/* Ink pad */
+.inkpad{border:1px solid var(--line); border-radius:var(--r); overflow:hidden; background:var(--surface)}
+.ink-tools{display:flex; flex-wrap:wrap; align-items:center; gap:6px; padding:6px 8px; border-bottom:1px solid var(--line)}
+.ink-tools .sep{width:1px; height:22px; background:var(--line); margin:0 2px}
+.swatch{width:30px; height:30px; border-radius:50%; border:2px solid transparent; display:grid; place-items:center; background:transparent; padding:0}
+.swatch span{width:16px; height:16px; border-radius:50%; display:block}
+.swatch[aria-pressed="true"]{border-color:var(--fg)}
+.tool{height:32px; padding:0 10px; border-radius:6px; border:1px solid transparent; background:transparent; font-size:13px; font-weight:500; color:var(--fg)}
+.tool[aria-pressed="true"]{background:var(--sunk); border-color:var(--line)}
+.tool:hover{background:var(--sunk)}
+.ink-tools .grow{flex:1}
+.ink-size{font-family:var(--f-mono); font-size:11px; color:var(--muted)}
+canvas.pad{display:block; width:100%; background:var(--paper); touch-action:none; cursor:crosshair}
+
+.discard{background:var(--st-prog-soft); border-radius:var(--r); padding:10px 12px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; font-size:14px}
+.discard span{flex:1 1 200px}
+.danger-zone{border-top:1px solid var(--line); padding-top:16px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; color:var(--muted); font-size:13px}
+
+/* Entity panel */
+.ent-name{font-family:var(--f-display); font-weight:700; font-size:22px; border:1px solid transparent; background:transparent; border-radius:6px; padding:2px 6px; margin-left:-6px; width:100%; min-width:0}
+.ent-name:hover{border-color:var(--line)} .ent-name:focus{border-color:var(--accent); outline:0; background:var(--surface)}
+.urlrow{display:flex; gap:8px; flex-wrap:wrap}
+.urlrow input{flex:1 1 220px; min-width:0; height:40px; border:1px solid var(--line); background:var(--surface); border-radius:var(--r); padding:0 10px; font-family:var(--f-mono); font-size:13px}
+.linkbtn{color:var(--accent); font-weight:600; text-decoration:none; display:inline-flex; align-items:center; height:40px}
+.grp h3{font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); margin:0 0 8px; font-weight:600}
+.grp-list{display:flex; flex-direction:column; border:1px solid var(--line); border-radius:var(--r); background:var(--surface); overflow:hidden}
+.trow{display:grid; grid-template-columns:44px 1fr auto; gap:10px; align-items:center; padding:10px 12px; border:0; border-bottom:1px solid var(--line); background:transparent; text-align:left; width:100%}
+.trow:last-child{border-bottom:0}
+.trow:hover{background:var(--sunk)}
+.trow .sr{font-family:var(--f-mono); color:var(--muted); font-size:13px}
+.trow .tx{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.none{color:var(--muted); font-size:14px}
+
+/* Popup */
+.pop{position:fixed; z-index:70; width:min(340px, calc(100vw - 24px)); max-height:320px; overflow-y:auto; background:var(--surface); border:1px solid var(--line-strong); border-radius:10px; box-shadow:var(--shadow); padding:4px}
+.pop-item{display:flex; align-items:center; gap:8px; width:100%; text-align:left; border:0; background:transparent; padding:8px 10px; border-radius:6px; min-height:40px}
+.pop-item.on{background:var(--accent-soft)}
+.pop-item .lb{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.pop-item .sb{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em}
+.pop-ico{width:22px; height:22px; border-radius:5px; display:grid; place-items:center; flex:none}
+.pop-ico svg{width:13px; height:13px}
+.pop-foot{font-size:11.5px; color:var(--muted); padding:6px 10px 4px; border-top:1px solid var(--line); margin-top:4px}
+
+/* Modal */
+.modal{position:fixed; z-index:60; left:50%; top:50%; transform:translate(-50%,-50%); width:min(460px, calc(100vw - 32px)); background:var(--bg); border-radius:12px; box-shadow:var(--shadow); padding:20px; display:flex; flex-direction:column; gap:14px; max-height:calc(100% - 32px); overflow-y:auto}
+.modal h2{font-family:var(--f-display); margin:0; font-size:20px}
+.modal textarea{min-height:140px; border:1px solid var(--line); border-radius:var(--r); background:var(--surface); padding:10px; resize:vertical}
+.modal p{margin:0; color:var(--muted); font-size:13.5px}
+.modal .acts{display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap}
+
+.toast{position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); background:var(--fg); color:var(--bg); padding:10px 16px; border-radius:var(--r); font-size:14px; z-index:90; max-width:calc(100vw - 32px); box-shadow:var(--shadow)}
+
+@media (max-width:640px){
+  .brand h1{font-size:20px}
+  .top-actions{flex-basis:100%}
+  .search{max-width:none}
+  .drawer-head{padding:10px 12px}
+  .drawer-body{padding:14px 12px}
+}
+@media (prefers-reduced-motion: no-preference){
+  .drawer:not([hidden]){animation:slide .2s ease-out}
+  @keyframes slide{from{transform:translateX(24px); opacity:.6}}
+}
+
+/* Base (stand-alone page) */
+:root{color-scheme:light}
+html{-webkit-tap-highlight-color:transparent}
+body{margin:0}
+[hidden]{display:none!important}
+img{max-width:100%}
+.stack{display:flex; flex-direction:column; gap:12px}
+a.btn{text-decoration:none; color:inherit}
+a.chip{text-decoration:none}
+.muted{color:var(--muted)}
+.pop-hint{color:var(--muted); font-size:13px}
+.toast a{color:inherit; font-weight:600; text-decoration:underline}
+/* Attachments */
+.c-att{min-width:150px}
+.att-cell{display:flex; flex-wrap:wrap; gap:4px; min-width:0}
+.att-list{display:flex; flex-wrap:wrap; gap:8px; align-items:center; min-height:32px}
+.att-item{display:inline-flex; align-items:center; gap:4px; background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:3px 4px 3px 6px; max-width:100%; min-width:0}
+.att-size{font-family:var(--f-mono); font-size:11px; color:var(--muted); white-space:nowrap}
+.att-actions{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.att-link{display:flex; gap:6px; flex:1 1 260px; min-width:0}
+.att-link input{flex:1; min-width:0; height:32px; border:1px solid var(--line); background:var(--surface); border-radius:var(--r); padding:0 10px; font-size:13px}
+/* Apple Pencil pad: no text selection, magnifier, callout or scrolling while writing */
+.inkpad, canvas.pad{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
+canvas.pad{touch-action:none; -ms-touch-action:none}
+/* Mind map */
+.map-wrap{position:relative; background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden; min-height:380px}
+#mapCanvas{display:block; touch-action:none; cursor:grab; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; outline:none}
+#mapCanvas:focus-visible{box-shadow:inset 0 0 0 2px var(--accent)}
+#mapCanvas.dragging{cursor:grabbing} #mapCanvas.over{cursor:pointer}
+.map-legend{position:absolute; left:10px; top:10px; display:flex; flex-wrap:wrap; gap:6px 12px; font-size:12px; color:var(--muted); background:color-mix(in srgb, var(--surface) 90%, transparent); padding:6px 10px; border-radius:8px; max-width:calc(100% - 20px); pointer-events:none}
+.lg{display:inline-flex; align-items:center; gap:6px; white-space:nowrap}
+.lg i{width:10px; height:10px; border-radius:50%; display:inline-block}
+.lg i.ring, .dot.ring{background:transparent!important; border:2.5px solid}
+.map-empty{position:absolute; inset:0; display:grid; place-items:center; text-align:center; padding:24px; color:var(--muted); line-height:1.6; pointer-events:none}
+.map-empty b{color:var(--fg)}
+.map-card{position:absolute; right:10px; bottom:10px; width:min(360px, calc(100% - 20px)); max-height:calc(100% - 64px); overflow:auto; background:var(--bg); border:1px solid var(--line-strong); border-radius:10px; box-shadow:var(--shadow); padding:12px; display:flex; flex-direction:column; gap:10px}
+.map-card .card-head{display:flex; justify-content:space-between; gap:10px; align-items:flex-start}
+.map-card .t{font-weight:600; font-size:15px; overflow-wrap:anywhere}
+.map-card .nbs{display:flex; flex-direction:column; gap:2px}
+.map-card .acts{display:flex; gap:8px; justify-content:flex-end}
+.nb{display:flex; gap:8px; align-items:center; text-align:left; background:transparent; border:0; padding:7px 8px; border-radius:6px; width:100%; min-width:0}
+.nb:hover{background:var(--sunk)}
+.nb .dot{width:10px; height:10px; border-radius:50%; flex:none}
+.nb .nl{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1}
+.nb .via{font-size:11.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:42%}
+.zoomers{display:inline-flex; gap:6px}
+.map-help{margin:0; font-size:12.5px; color:var(--muted)}
+.seg.plain button[aria-pressed="true"]{background:var(--fg); color:var(--bg); border-color:var(--fg)}
+.trow .via{display:block; font-size:12px; color:var(--muted); overflow:hidden; text-overflow:ellipsis}
+@media (max-width:640px){ .map-card{left:10px; right:10px; width:auto; max-height:55%} }
+.ink-tools .tool, .ink-tools .swatch{min-height:36px; min-width:36px}
+
+/* Microsoft sign-in */
+.gate{position:fixed; inset:0; z-index:80; background:var(--bg); display:grid; place-items:center; padding:24px 16px}
+.gate-card{max-width:420px; width:100%; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:24px; display:flex; flex-direction:column; gap:14px; box-shadow:var(--shadow)}
+.gate-card h2{font-family:var(--f-display); margin:0; font-size:22px}
+.gate-card p{margin:0; color:var(--muted); line-height:1.55}
+.gate-card .btn{align-self:flex-start; height:44px; padding:0 18px}
+.gate-err{color:var(--danger)!important; font-size:13.5px}
+.acct{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; font-size:13.5px; color:var(--muted); border-top:1px solid var(--line); padding-top:12px}
+.import{border-top:1px solid var(--line); padding-top:12px; display:flex; flex-direction:column; gap:8px}
+.import-h{font-weight:600; font-size:14px}
+.import p{font-size:13px}
+.import-row{display:flex; gap:8px; flex-wrap:wrap}
+.import-row input{flex:1 1 220px; min-width:0; height:36px; border:1px solid var(--line); background:var(--surface); border-radius:var(--r); padding:0 10px; font-family:var(--f-mono); font-size:12.5px}
+.import-msg{color:var(--fg)!important}
+.addr{display:block; font-family:var(--f-mono); font-size:13px; background:var(--bg); border:1px solid var(--line); border-radius:6px; padding:8px 10px; overflow-wrap:anywhere; user-select:all}
+.banner code{font-family:var(--f-mono); font-size:12.5px; background:var(--surface); padding:1px 5px; border-radius:4px; overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand"><h1>Follow-up Register</h1><span id="sync" class="sync">Connecting</span></div>
+    <div class="top-actions">
+      <input id="q" class="search" type="search" placeholder="Search tasks, people, projects" aria-label="Search">
+      <button id="newBtn" class="btn primary" type="button">+ New task</button>
+    </div>
+  </header>
+
+  <nav class="views" role="tablist" aria-label="Views">
+    <button type="button" role="tab" data-view="tasks" aria-selected="true">Tasks</button>
+    <button type="button" role="tab" data-view="map" aria-selected="false">Mind map</button>
+    <button type="button" role="tab" data-view="project" aria-selected="false">Projects<span class="count" id="cnt-project"></span></button>
+    <button type="button" role="tab" data-view="person" aria-selected="false">People<span class="count" id="cnt-person"></span></button>
+    <button type="button" role="tab" data-view="link" aria-selected="false">Links &amp; files<span class="count" id="cnt-link"></span></button>
+  </nav>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <section id="viewTasks" class="stack">
+    <div class="toolbar">
+      <div class="filters" id="filters"></div>
+      <div class="tools">
+        <label class="toggle"><input type="checkbox" id="hideDone" checked> <span id="hideDoneLbl">Hide Done</span></label>
+        <button type="button" class="btn small" id="sortBtn">Newest first</button>
+        <button type="button" class="btn small" id="settingsBtn">Settings</button>
+        <button type="button" class="btn small" id="exportBtn">Export to Excel</button>
+        <a class="btn small" id="folderLink" target="_blank" rel="noopener" hidden>OneDrive folder ↗</a>
+        <button type="button" class="btn small" id="refreshBtn" title="Fetch the latest from your other devices">Refresh</button>
+      </div>
+    </div>
+    <div id="list"></div>
+  </section>
+
+  <section id="viewDir" class="stack" hidden></section>
+
+  <section id="viewMap" class="stack" hidden>
+    <div class="toolbar">
+      <div class="seg plain" id="mapMode" role="group" aria-label="What to show">
+        <button type="button" data-mode="tags" aria-pressed="true">Tasks &amp; tags</button>
+        <button type="button" data-mode="tasks" aria-pressed="false">Tasks only</button>
+      </div>
+      <div class="tools">
+        <label class="toggle"><input type="checkbox" id="mapDone"> <span id="mapDoneLbl">Show Done</span></label>
+        <label class="toggle"><input type="checkbox" id="mapLone"> <span>Show untagged</span></label>
+        <span class="zoomers"><button type="button" class="btn small" id="mapFit">Fit</button><button type="button" class="btn small" id="mapZoomOut" aria-label="Zoom out">−</button><button type="button" class="btn small" id="mapZoomIn" aria-label="Zoom in">+</button></span>
+      </div>
+    </div>
+    <div class="map-wrap" id="mapWrap">
+      <canvas id="mapCanvas" tabindex="0" aria-label="Mind map of tasks and the people, projects, links and files tagged in them"></canvas>
+      <div class="map-legend" id="mapLegend"></div>
+      <div class="map-empty" id="mapEmpty" hidden></div>
+      <div class="map-card" id="mapCard" hidden></div>
+    </div>
+    <p class="map-help">Drag to move around · pinch or scroll to zoom · drag a bubble to rearrange · tap a bubble to see its links, tap it again to open it</p>
+  </section>
+</div>
+
+<div id="scrim" class="scrim" hidden></div>
+
+<aside id="editor" class="drawer" hidden aria-labelledby="edTitle">
+  <div class="drawer-head">
+    <div><div class="eyebrow" id="edEyebrow">New task</div><h2 id="edTitle">Sr No 1</h2></div>
+    <div class="head-actions">
+      <button type="button" class="btn ghost" id="edClose">Close</button>
+      <button type="button" class="btn primary" id="edSave">Save</button>
+    </div>
+  </div>
+  <div class="drawer-body" id="edBody">
+    <div class="discard" id="edDiscard" hidden><span>You have unsaved changes.</span>
+      <button type="button" class="btn small danger" id="edDiscardYes">Discard</button>
+      <button type="button" class="btn small" id="edDiscardNo">Keep editing</button></div>
+
+    <div class="field">
+      <div class="lbl" id="lblProject">Brand / Project <span class="hint">Type @ to pick or add</span></div>
+      <div class="picker" id="pkProject" data-types="project" data-ph="@ brand or project name"></div>
+    </div>
+
+    <div class="field">
+      <div class="lbl" id="lblDesc">Description <span class="hint" id="descHint">Type here, or handwrite on the pad below</span></div>
+      <div class="rich" id="edDesc" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="lblDesc" data-ph="What needs doing? Use @ to link a person, project, task, link or file."></div>
+      <div class="inkpad">
+        <div class="ink-tools" id="inkTools">
+          <button type="button" class="swatch" data-color="ink" aria-pressed="true" aria-label="Blue ink"><span style="background:#1F3FB5"></span></button>
+          <button type="button" class="swatch" data-color="black" aria-pressed="false" aria-label="Black ink"><span style="background:#1B1F27"></span></button>
+          <button type="button" class="swatch" data-color="red" aria-pressed="false" aria-label="Red ink"><span style="background:#C0362C"></span></button>
+          <span class="sep"></span>
+          <button type="button" class="tool" data-tool="pen" aria-pressed="true">Pen</button>
+          <button type="button" class="tool" data-tool="erase" aria-pressed="false">Eraser</button>
+          <button type="button" class="tool" id="inkFinger" aria-pressed="false" title="Let your finger draw too">Finger</button>
+          <span class="sep"></span>
+          <button type="button" class="tool" id="inkUndo">Undo</button>
+          <button type="button" class="tool" id="inkTaller">More space</button>
+          <button type="button" class="tool" id="inkClear">Clear</button>
+          <span class="grow"></span>
+          <span class="ink-size" id="inkSize"></span>
+        </div>
+        <canvas class="pad" id="pad" aria-label="Handwriting pad"></canvas>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <div class="lbl" id="lblFrom">Received from &amp; date</div>
+        <div class="pair"><div class="picker" id="pkFrom" data-types="person" data-ph="@ person"></div><input type="date" class="date-in" id="edFromDate" aria-label="Received date"></div>
+      </div>
+      <div class="field">
+        <div class="lbl" id="lblTo">Assigned to &amp; date</div>
+        <div class="pair"><div class="picker" id="pkTo" data-types="person" data-ph="@ person"></div><input type="date" class="date-in" id="edToDate" aria-label="Assigned date"></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="lbl">Current status</div>
+      <div class="seg" id="edStatus"></div>
+    </div>
+
+    <div class="field">
+      <div class="lbl" id="lblRem">Remarks <span class="hint">@ links anything</span></div>
+      <div class="rich" id="edRem" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="lblRem" data-ph="Notes, follow-ups, links. Type @ to link."></div>
+    </div>
+
+    <div class="field">
+      <div class="lbl">Attachments <span class="hint" id="attHint">Any file type, saved to your OneDrive</span></div>
+      <div class="att-list" id="edAtt"></div>
+      <div class="att-actions">
+        <button type="button" class="btn small" id="attFileBtn">Attach file</button>
+        <form class="att-link" id="attLinkForm" novalidate><input id="attLinkIn" type="url" inputmode="url" placeholder="or paste a link (OneDrive, SharePoint, web)" aria-label="Link to attach"><button class="btn small" type="submit">Add link</button></form>
+      </div>
+    </div>
+
+    <div class="field" id="edLinksField" hidden>
+      <div class="lbl">Linked tasks <span class="hint">share a tag with this task</span></div>
+      <div id="edLinks"></div>
+      <div><button type="button" class="btn small" id="edMapBtn">See on mind map</button></div>
+    </div>
+
+    <div class="danger-zone" id="edDanger">
+      <button type="button" class="btn small danger" id="edDelete">Delete task</button>
+      <span id="edMeta"></span>
+    </div>
+  </div>
+</aside>
+
+<aside id="entity" class="drawer" hidden aria-labelledby="entTitleLbl">
+  <div class="drawer-head">
+    <div style="min-width:0;flex:1"><div class="eyebrow" id="entTitleLbl">Project</div><input class="ent-name" id="entName" aria-label="Name"></div>
+    <div class="head-actions"><button type="button" class="btn ghost" id="entClose">Close</button></div>
+  </div>
+  <div class="drawer-body" id="entBody"></div>
+</aside>
+
+<div id="pop" class="pop" hidden role="listbox"></div>
+
+<div id="modal" class="modal" hidden role="dialog" aria-labelledby="modalTitle">
+  <h2 id="modalTitle">Settings</h2>
+  <p>One status per line, in order. The last one counts as finished and is hidden when “Hide” is ticked.</p>
+  <textarea id="statusText" aria-label="Statuses"></textarea>
+  <div class="acct" id="acctLine" hidden><span>Signed in as <b id="acctName"></b></span><button type="button" class="btn small" id="signOutBtn">Sign out</button></div>
+<div class="acts"><button type="button" class="btn" id="modalCancel">Cancel</button><button type="button" class="btn primary" id="modalSave">Save statuses</button></div>
+</div>
+
+<div id="gate" class="gate" hidden>
+  <div class="gate-card">
+    <h2>Follow-up Register</h2>
+    <p>Sign in with your company Microsoft account. Your tasks, handwriting and attachments are kept in your own OneDrive, in <b>Apps › Follow-up Register</b>.</p>
+    <button type="button" class="btn primary" id="signInBtn">Sign in with Microsoft</button>
+    <p class="gate-err" id="gateErr" hidden></p>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden role="status"></div>
+<input type="file" id="fileIn" hidden>
+
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const clone = o => o == null ? o : JSON.parse(JSON.stringify(o));
+const pad2 = n => String(n).padStart(2, '0');
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); };
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fmtDate(s){ if(!s) return ''; const [y,m,d] = String(s).slice(0,10).split('-').map(Number); if(!y || !m) return s; const yy = y === new Date().getFullYear() ? '' : ' ' + String(y).slice(2); return pad2(d) + ' ' + MONTHS[m-1] + yy; }
+function daysSince(s){ if(!s) return null; const t = new Date(String(s).slice(0,10) + 'T00:00:00'); return isNaN(t) ? null : Math.floor((Date.now() - t.getTime()) / 86400000); }
+function fmtSize(b){ if(!b) return ''; return b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB'; }
+const safeUrl = u => /^(https?:|data:)/i.test(u || '') ? u : '#';
+const ALL_TYPES = ['person','project','task','link','file'];
+const TYPE_LABEL = {person:'Person', project:'Brand / Project', task:'Task', link:'Link', file:'File', gone:'Removed'};
+const DEFAULT_STATUSES = ['Open','In progress','Waiting','Done'];
+const INK = {ink:'#1F3FB5', black:'#1B1F27', red:'#C0362C'};
+
+const ICONS = {
+  person:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="8" cy="5.5" r="2.8"/><path d="M2.5 14c.8-2.8 3-4.2 5.5-4.2s4.7 1.4 5.5 4.2"/></svg>',
+  project:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 5.5h12v8H2z"/><path d="M5.5 5.5V3h5v2.5"/></svg>',
+  task:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="2"/><path d="M5.3 8.2l1.9 1.9 3.6-3.8"/></svg>',
+  link:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6.8 9.2a3 3 0 0 0 4.2 0l2-2a3 3 0 0 0-4.2-4.2l-.8.8"/><path d="M9.2 6.8a3 3 0 0 0-4.2 0l-2 2a3 3 0 0 0 4.2 4.2l.8-.8"/></svg>',
+  file:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 1.8h5l3 3v9.4H4z"/><path d="M9 1.8v3h3"/></svg>',
+  gone:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+  plus:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>'
+};
+const icon = t => ICONS[t] || ICONS.gone;
+
+/* =========================================================
+   Data: your company OneDrive (Microsoft Graph), signed in with your company account
+   ========================================================= */
+const MS_CONFIG = window.MS_CONFIG || {};
+const LOCAL = {
+  _load(){ try { return JSON.parse(localStorage.getItem('fr-local')) || { tasks:{}, entities:{}, ink:{}, settings:{} }; } catch(e){ return { tasks:{}, entities:{}, ink:{}, settings:{} }; } },
+  _save(d){ try { localStorage.setItem('fr-local', JSON.stringify(d)); } catch(e){ throw new Error('This browser is out of storage space.'); } },
+  getAll(){ const d = this._load(); return JSON.stringify({ tasks:Object.values(d.tasks), entities:Object.values(d.entities), ink:d.ink, settings:d.settings, folderUrl:'', maxUploadMb:2 }); },
+  exportCsv(){ return JSON.stringify({ csv:buildCsv() }); },
+  saveTask(p){ p = JSON.parse(p); const d = this._load(); const t = p.task;
+    if(p.isNew || !t.sr) t.sr = Object.values(d.tasks).reduce((m, x) => Math.max(m, x.sr || 0), 0) + 1;
+    t.updatedAt = Date.now(); d.tasks[t.id] = t;
+    if('ink' in p){ if(p.ink) d.ink[t.id] = p.ink; else delete d.ink[t.id]; }
+    this._save(d); return JSON.stringify(t); },
+  deleteTask(id){ const d = this._load(); delete d.tasks[id]; delete d.ink[id]; this._save(d); return 'ok'; },
+  saveEntity(p){ const e = JSON.parse(p); const d = this._load(); d.entities[e.id] = e; this._save(d); return p; },
+  deleteEntity(id){ const d = this._load(); delete d.entities[id]; this._save(d); return 'ok'; },
+  saveSettings(p){ const d = this._load(); Object.assign(d.settings, JSON.parse(p)); this._save(d); return 'ok'; },
+  uploadFile(name, mime, b64){ const d = this._load(); const e = { id:uid('e'), type:'file', name, url:'data:' + mime + ';base64,' + b64, size:Math.round(b64.length * .75), mime, createdAt:Date.now() }; d.entities[e.id] = e; this._save(d); return JSON.stringify(e); }
+};
+/* =========================================================
+   Microsoft 365 back end: sign in with your company account,
+   keep everything in OneDrive › Apps › <app name>.
+   ========================================================= */
+const MS_READY = /^[0-9a-f-]{36}$/i.test(MS_CONFIG.clientId) && /^[0-9a-f-]{36}$/i.test(MS_CONFIG.tenantId);
+const BACKEND = MS_READY ? 'graph' : 'local';
+const REMOTE = BACKEND !== 'local';
+const STORE_NAME = 'OneDrive';
+const SCOPES = ['User.Read', 'Files.ReadWrite.AppFolder'];
+const GRAPH = 'https://graph.microsoft.com/v1.0';
+const APPROOT = GRAPH + '/me/drive/special/approot';
+const MAX_UPLOAD_MB = 250;
+
+/* ---------- Microsoft sign-in (OAuth 2.0 authorization code + PKCE, the standard for web apps) ----------
+   Tokens stay in this browser only. Nothing is sent anywhere except Microsoft. */
+const AUTH = { account:null, redirecting:false };
+const LOGIN = 'https:' + '//login.microsoftonline.com/' + (MS_CONFIG.tenantId || 'organizations') + '/oauth2/v2.0';
+const AUTH_SCOPE = 'openid profile offline_access ' + SCOPES.join(' ');
+const redirectUri = () => location.origin + location.pathname;
+const b64url = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const randomStr = n => b64url(crypto.getRandomValues(new Uint8Array(n)));
+function readJwt(t){ try { const p = t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'); return JSON.parse(decodeURIComponent(escape(atob(p + '==='.slice((p.length + 3) % 4))))); } catch(e){ return {}; } }
+function loadTok(){ try { return JSON.parse(localStorage.getItem('fr-auth') || 'null'); } catch(e){ return null; } }
+function saveTok(t){ try { localStorage.setItem('fr-auth', JSON.stringify(t)); } catch(e){} }
+
+async function authRedirect(opts = {}){
+  if(!window.crypto || !crypto.subtle) throw new Error('Open the app from its https address (GitHub Pages), not as a file.');
+  AUTH.redirecting = true;
+  const verifier = randomStr(48), state = randomStr(24), nonce = randomStr(24);
+  const challenge = b64url(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier)));
+  try { localStorage.setItem('fr-pkce', JSON.stringify({ verifier, state, nonce, silent:!!opts.silent, t:Date.now() })); } catch(e){}
+  const q = new URLSearchParams({ client_id:MS_CONFIG.clientId, response_type:'code', redirect_uri:redirectUri(), response_mode:'query',
+    scope:AUTH_SCOPE, state, nonce, code_challenge:challenge, code_challenge_method:'S256' });
+  if(opts.prompt) q.set('prompt', opts.prompt);
+  if(opts.hint) q.set('login_hint', opts.hint);
+  location.assign(LOGIN + '/authorize?' + q.toString());
+  return new Promise(() => {});
+}
+async function tokenRequest(params){
+  let r;
+  try { r = await fetch(LOGIN + '/token', { method:'POST', headers:{ 'Content-Type':'application/x-www-form-urlencoded' },
+    body:new URLSearchParams(Object.assign({ client_id:MS_CONFIG.clientId, scope:AUTH_SCOPE }, params)).toString() }); }
+  catch(e){ const er = new Error('No connection to Microsoft sign-in. Check your internet.'); er.network = true; throw er; }
+  const j = await r.json().catch(() => ({}));
+  if(!r.ok || !j.access_token){
+    const d = String(j.error_description || '');
+    const er = new Error(/AADSTS9002326/.test(d) ? 'In the app registration, the web address must be added under “Single-page application”, not “Web” (see SETUP).'
+      : /AADSTS7000218|AADSTS700025/.test(d) ? 'In the app registration, add the web address under “Single-page application” (see SETUP).'
+      : (d.split('\r\n')[0] || j.error || 'Microsoft sign-in failed.'));
+    er.code = j.error || ''; throw er;
+  }
+  return j;
+}
+function storeTokens(j, prev){
+  const idc = j.id_token ? readJwt(j.id_token) : {};
+  const acct = j.id_token ? { username:idc.preferred_username || idc.upn || idc.email || '', name:idc.name || '', oid:idc.oid, tid:idc.tid } : (prev && prev.account);
+  const now = Date.now();
+  const t = { access:j.access_token, got:now, exp:now + (Number(j.expires_in) || 3600) * 1000, refresh:j.refresh_token || (prev && prev.refresh), account:acct };
+  saveTok(t); AUTH.account = acct; return t;
+}
+async function authInit(){
+  const params = new URLSearchParams(location.search);
+  if(params.has('code') || params.has('error')){
+    let pk = null; try { pk = JSON.parse(localStorage.getItem('fr-pkce') || 'null'); localStorage.removeItem('fr-pkce'); } catch(e){}
+    history.replaceState(null, '', location.pathname + location.hash);
+    if(params.has('error')){
+      const err = params.get('error');
+      if(pk && pk.silent && /login_required|interaction_required|consent_required|account_selection_required/.test(err)){
+        const prev = loadTok(); await authRedirect({ hint:prev && prev.account && prev.account.username });
+      }
+      throw new Error((params.get('error_description') || err).split('\r\n')[0].split('\n')[0]);
+    }
+    if(!pk || pk.state !== params.get('state')) throw new Error('Sign-in was interrupted. Please sign in again.');
+    const j = await tokenRequest({ grant_type:'authorization_code', code:params.get('code'), redirect_uri:redirectUri(), code_verifier:pk.verifier });
+    if(j.id_token && readJwt(j.id_token).nonce !== pk.nonce) throw new Error('Sign-in check failed. Please sign in again.');
+    storeTokens(j, null);
+    return AUTH.account;
+  }
+  const t = loadTok();
+  AUTH.account = t && t.account || null;
+  return AUTH.account;
+}
+function signIn(){ return authRedirect({ prompt:'select_account' }); }
+function signOut(){
+  AUTH.redirecting = true;
+  try { ['fr-auth', 'fr-cache', 'fr-pkce'].forEach(k => localStorage.removeItem(k)); } catch(e){}
+  location.assign(LOGIN + '/logout?' + new URLSearchParams({ post_logout_redirect_uri:redirectUri() }).toString());
+}
+let refreshing_tok = null;
+async function accessToken(force){
+  const t = loadTok();
+  if(!t){ await authRedirect({}); }
+  const margin = Math.min(120000, Math.max(0, (t.exp - (t.got || 0)) / 4));
+  if(!force && t.access && t.exp - Date.now() > margin) return t.access;
+  if(t.refresh){
+    if(!refreshing_tok) refreshing_tok = tokenRequest({ grant_type:'refresh_token', refresh_token:t.refresh })
+      .then(j => storeTokens(j, t).access).finally(() => { refreshing_tok = null; });
+    try { return await refreshing_tok; }
+    catch(e){ if(e.network) throw e; }
+  }
+  let last = 0; try { last = Number(localStorage.getItem('fr-reauth') || 0); } catch(e){}
+  if(Date.now() - last < 120000){
+    AUTH.account = null; showGate('Your sign-in has expired. Please sign in again.');
+    throw new Error('Please sign in again.');
+  }
+  try { localStorage.setItem('fr-reauth', String(Date.now())); } catch(e){}
+  await authRedirect({ prompt:'none', hint:t.account && t.account.username, silent:true });
+}
+
+function gErr(status, body){
+  let msg = '';
+  try { const j = JSON.parse(body); msg = (j.error && (j.error.message || j.error.code)) || ''; } catch(e){ msg = (body || '').slice(0, 160); }
+  const err = new Error(status === 403 ? 'OneDrive refused access. Ask IT to allow the app’s OneDrive permission (see SETUP).' :
+    status === 507 ? 'Your OneDrive is full.' : msg || ('OneDrive error ' + status));
+  err.status = status; return err;
+}
+async function gfetch(url, opts = {}, retried){
+  const tok = await accessToken(retried === 'auth');
+  const headers = Object.assign({ Authorization:'Bearer ' + tok }, opts.headers || {});
+  let r;
+  try { r = await fetch(url, Object.assign({}, opts, { headers })); }
+  catch(e){ throw new Error('No connection to OneDrive. Check your internet and try again.'); }
+  if(r.status === 401 && retried !== 'auth') return gfetch(url, opts, 'auth');
+  if((r.status === 429 || r.status === 503 || r.status === 504) && !retried){
+    const wait = Math.min(8000, (Number(r.headers.get('Retry-After')) || 2) * 1000);
+    await new Promise(res => setTimeout(res, wait));
+    return gfetch(url, opts, 'busy');
+  }
+  return r;
+}
+const pathUrl = (p, suffix = '') => APPROOT + ':/' + p.split('/').map(encodeURIComponent).join('/') + ':' + suffix;
+
+/* Read a JSON file → { data, etag } or null when it doesn't exist */
+async function readJson(p){
+  const r = await gfetch(pathUrl(p));
+  if(r.status === 404) return null;
+  if(!r.ok) throw gErr(r.status, await r.text());
+  const meta = await r.json();
+  const dl = meta['@microsoft.graph.downloadUrl'];
+  let text;
+  try { text = await fetch(dl, { cache:'no-store' }).then(x => { if(!x.ok) throw new Error(); return x.text(); }); }
+  catch(e){ throw new Error('Could not download ' + p + ' from OneDrive.'); }
+  let data;
+  try { data = JSON.parse(text || '{}'); } catch(e){ throw new Error(p + ' is damaged. Restore a copy from the Backups folder in OneDrive.'); }
+  return { data, etag:meta.eTag };
+}
+/* Write a file; with etag the write only succeeds if nobody changed the file meanwhile */
+async function writeFile(p, content, type, etag, conflict){
+  const headers = { 'Content-Type':type || 'application/json' };
+  if(etag) headers['If-Match'] = etag;
+  const r = await gfetch(pathUrl(p, '/content' + (conflict ? '?@microsoft.graph.conflictBehavior=' + conflict : '')), { method:'PUT', headers, body:content });
+  if(r.status === 412 || r.status === 409) { const e = new Error('changed'); e.conflict = true; throw e; }
+  if(!r.ok) throw gErr(r.status, await r.text());
+  return r.json();
+}
+async function listFolder(p){
+  const out = []; let url = pathUrl(p, '/children?$top=200');
+  while(url){
+    const r = await gfetch(url);
+    if(r.status === 404) return out;
+    if(!r.ok) throw gErr(r.status, await r.text());
+    const j = await r.json(); out.push(...(j.value || [])); url = j['@odata.nextLink'] || null;
+  }
+  return out;
+}
+async function deleteItem(id){
+  const r = await gfetch(GRAPH + '/me/drive/items/' + encodeURIComponent(id), { method:'DELETE' });
+  if(!r.ok && r.status !== 404) throw gErr(r.status, await r.text());
+}
+
+/* register.json, cached with its eTag so a normal save is one upload */
+const REG = { data:null, etag:null };
+const emptyReg = () => ({ version:1, tasks:{}, entities:{}, settings:{} });
+function normReg(d){ d = d || emptyReg(); d.tasks = d.tasks || {}; d.entities = d.entities || {}; d.settings = d.settings || {}; return d; }
+async function loadReg(){
+  const f = await readJson('register.json');
+  if(f){ REG.data = normReg(f.data); REG.etag = f.etag; return REG.data; }
+  const meta = await writeFile('register.json', JSON.stringify(emptyReg()), 'application/json', null, 'fail').catch(async e => { if(e.conflict) return null; throw e; });
+  if(!meta){ return loadReg(); }
+  REG.data = emptyReg(); REG.etag = meta.eTag; return REG.data;
+}
+async function mutateReg(fn){
+  for(let attempt = 0; attempt < 5; attempt++){
+    if(!REG.data || attempt > 0) await loadReg();
+    const d = JSON.parse(JSON.stringify(REG.data));
+    const result = fn(d);
+    d.version = 1; d.savedAt = new Date().toISOString();
+    await dailyBackup();
+    try {
+      const meta = await writeFile('register.json', JSON.stringify(d), 'application/json', REG.etag);
+      REG.data = d; REG.etag = meta.eTag; return result;
+    } catch(e){ if(!e.conflict) throw e; }
+  }
+  throw new Error('Another device kept saving at the same moment. Try again.');
+}
+let backupDay = null;
+async function dailyBackup(){
+  const day = today();
+  try { if(backupDay === day || localStorage.getItem('fr-backup-day') === day) return; } catch(e){ if(backupDay === day) return; }
+  backupDay = day;
+  try {
+    if(!REG.data) return;
+    await writeFile('Backups/register ' + day + '.json', JSON.stringify(REG.data), 'application/json', null, 'replace');
+    try { localStorage.setItem('fr-backup-day', day); } catch(e){}
+    const files = (await listFolder('Backups')).filter(f => f.file).sort((a, b) => b.name.localeCompare(a.name));
+    for(const f of files.slice(30)) await deleteItem(f.id);
+  } catch(e){ /* a failed backup never blocks a save */ }
+}
+
+async function setInk(id, createdAt, ink){
+  const d = new Date(createdAt || Date.now());
+  const p = 'Handwriting/handwriting-' + d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '.json';
+  for(let attempt = 0; attempt < 5; attempt++){
+    const f = await readJson(p);
+    const data = f ? f.data : {};
+    if(ink && ink.s && ink.s.length) data[id] = { h:ink.h || 320, s:ink.s };
+    else if(data[id]) delete data[id];
+    else return;
+    try { await writeFile(p, JSON.stringify(data), 'application/json', f ? f.etag : null, f ? null : 'fail'); return; }
+    catch(e){ if(!e.conflict) throw e; }
+  }
+  throw new Error('Could not save the handwriting. Try again.');
+}
+
+
+/* Upload a file into OneDrive › Apps › … › Attachments (large files go up in parts) */
+async function uploadBlob(name, mime, file){
+  const safe = String(name || 'file').replace(/[\\:*?"<>|#%]/g, '_').slice(0, 180) || 'file';
+  if(file.size <= 4 * 1024 * 1024) return writeFile('Attachments/' + safe, file, mime || 'application/octet-stream', null, 'rename');
+  const r = await gfetch(pathUrl('Attachments/' + safe, '/createUploadSession'), { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ item:{ '@microsoft.graph.conflictBehavior':'rename' } }) });
+  if(!r.ok) throw gErr(r.status, await r.text());
+  const { uploadUrl } = await r.json();
+  const CHUNK = 320 * 1024 * 10; let item = null;
+  for(let start = 0; start < file.size; start += CHUNK){
+    const end = Math.min(file.size, start + CHUNK);
+    let res;
+    try { res = await fetch(uploadUrl, { method:'PUT', headers:{ 'Content-Range':'bytes ' + start + '-' + (end - 1) + '/' + file.size }, body:file.slice(start, end) }); }
+    catch(e){ throw new Error('The upload stopped. Check your connection and try again.'); }
+    if(!res.ok && res.status !== 202) throw gErr(res.status, await res.text());
+    if(end === file.size) item = await res.json();
+    toast('Uploading ' + name + '… ' + Math.round(end / file.size * 100) + '%', 60000);
+  }
+  return item;
+}
+
+let folderUrl = '';
+const GRAPHAPI = {
+  async getAll(){
+    const reg = await loadReg();
+    const ink = {};
+    const files = (await listFolder('Handwriting')).filter(f => f.file && /^handwriting-.*\.json$/.test(f.name));
+    await Promise.all(files.map(async f => {
+      try { const t = await fetch(f['@microsoft.graph.downloadUrl'], { cache:'no-store' }).then(x => x.text()); Object.assign(ink, JSON.parse(t || '{}')); } catch(e){}
+    }));
+    if(!folderUrl){ try { const r = await gfetch(APPROOT); if(r.ok) folderUrl = (await r.json()).webUrl || ''; } catch(e){} }
+    return JSON.stringify({ tasks:Object.values(reg.tasks), entities:Object.values(reg.entities), ink, settings:reg.settings, folderUrl, maxUploadMb:MAX_UPLOAD_MB });
+  },
+  async saveTask(payload){
+    const p = JSON.parse(payload); const t = p.task;
+    if(!t || !t.id) throw new Error('Missing task id');
+    const saved = await mutateReg(d => {
+      const prev = d.tasks[t.id];
+      if(p.isNew || !t.sr){ let m = 0; for(const k in d.tasks) m = Math.max(m, Number(d.tasks[k].sr) || 0); t.sr = m + 1; }
+      t.createdAt = (prev && prev.createdAt) || t.createdAt || Date.now();
+      t.updatedAt = Date.now();
+      d.tasks[t.id] = t; return t;
+    });
+    if(Object.prototype.hasOwnProperty.call(p, 'ink')) await setInk(t.id, saved.createdAt, p.ink);
+    return JSON.stringify(saved);
+  },
+  async deleteTask(id){
+    const t = await mutateReg(d => { const x = d.tasks[id]; delete d.tasks[id]; return x; });
+    if(t) await setInk(id, t.createdAt, null);
+    return 'ok';
+  },
+  async saveEntity(payload){
+    const e = JSON.parse(payload); if(!e || !e.id) throw new Error('Missing id');
+    await mutateReg(d => { d.entities[e.id] = e; });
+    return JSON.stringify(e);
+  },
+  async deleteEntity(id){
+    const e = await mutateReg(d => { const x = d.entities[id]; delete d.entities[id]; return x; });
+    if(e && e.type === 'file' && e.fileId){ try { await deleteItem(e.fileId); } catch(err){} }
+    return 'ok';
+  },
+  async saveSettings(payload){
+    const s = JSON.parse(payload);
+    await mutateReg(d => { Object.assign(d.settings, s); });
+    return 'ok';
+  },
+  async uploadFile(name, mime, b64, file){
+    const item = await uploadBlob(name, mime, file);
+    const e = { id:uid('e'), type:'file', name:item.name || name, fileId:item.id, url:item.webUrl, size:item.size || file.size, mime:mime, createdAt:Date.now() };
+    await mutateReg(d => { d.entities[e.id] = e; });
+    return JSON.stringify(e);
+  },
+  async exportCsv(){
+    const d = new Date();
+    const name = 'Follow-up Register ' + today() + ' ' + pad2(d.getHours()) + pad2(d.getMinutes()) + '.csv';
+    const item = await writeFile('Exports/' + name, buildCsv(), 'text/csv', null, 'replace');
+    return JSON.stringify({ url:item.webUrl, name });
+  }
+};
+
+function call(fn, ...args){
+  return Promise.resolve().then(() => GRAPHAPI[fn](...args));
+}
+function errMsg(e){ const m = (e && e.message) || String(e || ''); return m ? 'Could not save: ' + m.replace(/^Exception:\s*/, '') : 'Could not save. Check your connection and try again.'; }
+
+/* ---------- State ---------- */
+const S = { tasks:new Map(), entities:new Map(), ink:new Map(), statuses:[...DEFAULT_STATUSES],
+  loaded:false, pending:0, err:null, folderUrl:'', maxUploadMb:20 };
+const UI = { view:'tasks', status:'all', hideDone:true, sort:'desc', q:'' };
+try { Object.assign(UI, JSON.parse(localStorage.getItem('fr-ui') || '{}'), { q:'' }); } catch(e){}
+function saveUI(){ try { localStorage.setItem('fr-ui', JSON.stringify({ view:UI.view, status:UI.status, hideDone:UI.hideDone, sort:UI.sort })); } catch(e){} }
+
+function applyAll(d){
+  S.tasks = new Map((d.tasks || []).map(t => [t.id, t]));
+  S.entities = new Map((d.entities || []).map(e => [e.id, e]));
+  S.ink = new Map(Object.entries(d.ink || {}));
+  const st = d.settings && d.settings.statuses;
+  if(Array.isArray(st) && st.length >= 2) S.statuses = st.map(String);
+  if(d.folderUrl != null) S.folderUrl = d.folderUrl;
+  if(d.maxUploadMb) S.maxUploadMb = d.maxUploadMb;
+  S.loaded = true;
+  scheduleRender();
+}
+function cacheSave(){ if(!REMOTE) return; try { localStorage.setItem('fr-cache', JSON.stringify({ tasks:[...S.tasks.values()], entities:[...S.entities.values()], ink:Object.fromEntries(S.ink), settings:{ statuses:S.statuses }, folderUrl:S.folderUrl, maxUploadMb:S.maxUploadMb })); } catch(e){} }
+function cacheLoad(){ if(!REMOTE) return false; try { const d = JSON.parse(localStorage.getItem('fr-cache') || 'null'); if(d){ applyAll(d); return true; } } catch(e){} return false; }
+
+/* Writes go out one at a time, in order */
+let chain = Promise.resolve(), writeSeq = 0;
+function write(fn, ...args){
+  writeSeq++; S.pending++; renderSync();
+  const p = chain.then(() => call(fn, ...args));
+  chain = p.catch(() => {});
+  return p.then(r => { S.err = null; return r; }, e => { toast(errMsg(e)); throw e; })
+    .finally(() => { S.pending--; renderSync(); if(!S.pending){ cacheSave(); setTimeout(refresh, 1200); } });
+}
+let refreshing = false;
+async function refresh(){
+  if(refreshing || S.pending) return;
+  if(BACKEND === 'graph' && (!AUTH.account || AUTH.redirecting)) return;
+  refreshing = true; const seq = writeSeq;
+  try { const r = await call('getAll'); if(seq === writeSeq && !S.pending){ applyAll(JSON.parse(r)); cacheSave(); } S.err = null; }
+  catch(e){ if(!S.err && e && e.message && BACKEND === 'graph' && !AUTH.redirecting) toast(e.message, 6000); S.err = 'offline'; if(!S.loaded){ S.loaded = true; scheduleRender(); } }
+  finally { refreshing = false; renderSync(); }
+}
+
+/* ---------- Data helpers ---------- */
+const MENTION_RE = /@\[([^\]\n]*)\]\(([^)\s]+)\)/g;
+function parseMarkup(s){
+  s = s || ''; const parts = []; let last = 0;
+  for(const m of s.matchAll(MENTION_RE)){ if(m.index > last) parts.push({ t:s.slice(last, m.index) }); parts.push({ label:m[1], id:m[2] }); last = m.index + m[0].length; }
+  if(last < s.length) parts.push({ t:s.slice(last) });
+  return parts;
+}
+const mentionIds = s => [...(s || '').matchAll(MENTION_RE)].map(m => m[2]);
+function refInfo(id){
+  if(!id) return { type:'gone', name:'', exists:false };
+  if(id.startsWith('t:')){ const t = S.tasks.get(id.slice(2)); return t ? { type:'task', name:'#' + t.sr + (shortText(t.desc, 34) ? ' ' + shortText(t.desc, 34) : ''), exists:true } : { type:'gone', name:'Deleted task', exists:false }; }
+  const e = S.entities.get(id);
+  return e ? { type:e.type, name:e.name, exists:true, e } : { type:'gone', name:'', exists:false };
+}
+function plainText(s){ return parseMarkup(s).map(p => p.t != null ? p.t : '@' + (refInfo(p.id).name || p.label)).join(''); }
+function shortText(s, n){ const t = plainText(s).replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; }
+function chipHTML(id, label, interactive = true){
+  const r = refInfo(id); const type = r.exists ? r.type : 'gone'; const name = r.exists ? r.name : (label || 'Removed');
+  const tag = interactive ? 'button' : 'span';
+  return `<${tag} ${interactive ? 'type="button"' : ''} class="chip t-${type}" data-ref="${esc(id)}" title="${esc(TYPE_LABEL[type])}: ${esc(name)}">${icon(type)}${esc(name)}</${tag}>`;
+}
+function fileChipHTML(id){
+  const e = S.entities.get(id); if(!e) return '';
+  return `<a class="chip t-${e.type}" href="${esc(safeUrl(e.url))}" target="_blank" rel="noopener" title="Open ${esc(e.name)}">${icon(e.type)}${esc(e.name)}</a>`;
+}
+function renderMarkup(s){ return parseMarkup(s).map(p => p.t != null ? esc(p.t).replace(/\n/g, '<br>') : chipHTML(p.id, p.label)).join(''); }
+function closedStatus(){ return S.statuses[S.statuses.length - 1]; }
+function statusClass(s){
+  const i = S.statuses.indexOf(s), n = S.statuses.length;
+  if(i < 0 || i === 0) return 'st-open'; if(i === n - 1) return 'st-done';
+  return ['st-prog','st-wait'][(i - 1) % 2];
+}
+function nextSr(){ let m = 0; for(const t of S.tasks.values()) m = Math.max(m, t.sr || 0); return m + 1; }
+function taskSearchText(t){
+  return ['#' + t.sr, plainText(t.desc), plainText(t.remarks), t.status, refInfo(t.projectId).name, refInfo(t.fromId).name, refInfo(t.toId).name,
+    ...(t.attachments || []).map(a => refInfo(a).name)].join(' ').toLowerCase();
+}
+function refsOf(id){
+  const out = { project:[], from:[], to:[], mentioned:[], attached:[] };
+  for(const [tid, t] of S.tasks){
+    if(t.projectId === id) out.project.push(tid);
+    if(t.fromId === id) out.from.push(tid);
+    if(t.toId === id) out.to.push(tid);
+    if((t.mentions || []).includes(id)) out.mentioned.push(tid);
+    if((t.attachments || []).includes(id)) out.attached.push(tid);
+  }
+  return out;
+}
+const allRefs = r => new Set([...r.project, ...r.from, ...r.to, ...r.mentioned, ...r.attached]);
+
+/* ---------- Ink encode / thumbnails ---------- */
+function decodeInk(doc){ if(!doc || !Array.isArray(doc.s)) return []; return doc.s.filter(s => Array.isArray(s.d) && s.d.length >= 3).map(s => ({ c:s.c || 'ink', w:s.w || 2, p:s.d })); }
+function encodeInk(strokes, h){ return { h, s:strokes.map(s => ({ c:s.c, w:s.w, d:s.p })) }; }
+function inkThumb(doc){
+  const strokes = decodeInk(doc); if(!strokes.length) return '';
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for(const s of strokes) for(let i = 0; i < s.p.length; i += 3){ const x = s.p[i], y = s.p[i+1]; if(x < x0) x0 = x; if(x > x1) x1 = x; if(y < y0) y0 = y; if(y > y1) y1 = y; }
+  const padd = 12; x0 -= padd; y0 -= padd; const w = Math.max(80, x1 - x0 + padd), h = Math.max(40, y1 - y0 + padd);
+  let paths = '';
+  for(const s of strokes){
+    let d = ''; for(let i = 0; i < s.p.length; i += 3) d += (i ? 'L' : 'M') + s.p[i] + ' ' + s.p[i+1];
+    if(s.p.length === 3) d += 'l0.1 0';
+    paths += `<path d="${d}" stroke="${INK[s.c] || INK.ink}" stroke-width="${s.w * 1.4}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+  }
+  return `<svg class="ink-thumb" viewBox="${x0} ${y0} ${w} ${h}" width="${Math.min(320, w)}" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Handwritten note">${paths}</svg>`;
+}
+
+/* ---------- Rendering ---------- */
+let rq = 0;
+function scheduleRender(){ if(rq) return; rq = requestAnimationFrame(() => { rq = 0; render(); }); }
+const wide = matchMedia('(min-width: 960px)');
+wide.addEventListener ? wide.addEventListener('change', scheduleRender) : wide.addListener(scheduleRender);
+
+function renderSync(){
+  const el = $('#sync');
+  if(!REMOTE){ el.className = 'sync local'; el.textContent = 'This browser only'; return; }
+  if(S.pending > 0){ el.className = 'sync busy'; el.textContent = 'Saving'; return; }
+  if(S.err){ el.className = 'sync err'; el.textContent = 'Offline, showing last copy'; return; }
+  if(!S.loaded){ el.className = 'sync'; el.textContent = 'Connecting'; return; }
+  el.className = 'sync ok'; el.textContent = 'Saved to ' + STORE_NAME;
+}
+
+function render(){
+  renderSync();
+  const banner = $('#banner');
+  if(!REMOTE){ banner.hidden = false; banner.innerHTML = 'Setup isn’t finished, so tasks are kept in this browser only. Add your <b>Client ID</b> and <b>Tenant ID</b> at the top of the file (see SETUP). Register this address as the redirect URI: <code>' + esc(location.origin + location.pathname) + '</code>'; }
+  else banner.hidden = true;
+
+  for(const t of ['project','person','link']){
+    const n = [...S.entities.values()].filter(e => t === 'link' ? (e.type === 'link' || e.type === 'file') : e.type === t).length;
+    $('#cnt-' + t).textContent = n ? n : '';
+  }
+  $$('.views button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view === UI.view)));
+  $('#viewTasks').hidden = UI.view !== 'tasks';
+  $('#viewDir').hidden = !['project','person','link'].includes(UI.view);
+  $('#viewMap').hidden = UI.view !== 'map';
+  $('#hideDoneLbl').textContent = 'Hide ' + closedStatus();
+  $('#hideDone').checked = UI.hideDone;
+  $('#sortBtn').textContent = UI.sort === 'desc' ? 'Newest first' : 'Oldest first';
+  const fl = $('#folderLink'); fl.hidden = !S.folderUrl; if(S.folderUrl) fl.href = S.folderUrl;
+  $('#refreshBtn').hidden = !REMOTE;
+
+  if(UI.view === 'tasks'){ renderFilters(); renderList(); } else if(UI.view === 'map') mapUpdate(); else renderDir();
+  if(!$('#entity').hidden && ENT) renderEntity();
+  if(ED) renderAtt();
+}
+
+function renderFilters(){
+  const counts = {}; let all = 0;
+  for(const t of S.tasks.values()){ counts[t.status] = (counts[t.status] || 0) + 1; all++; }
+  const closed = closedStatus();
+  const allCount = UI.hideDone ? all - (counts[closed] || 0) : all;
+  let h = `<button type="button" class="fchip" data-st="all" aria-pressed="${UI.status === 'all'}">All <span class="n">${allCount}</span></button>`;
+  for(const s of S.statuses) h += `<button type="button" class="fchip" data-st="${esc(s)}" aria-pressed="${UI.status === s}">${esc(s)} <span class="n">${counts[s] || 0}</span></button>`;
+  $('#filters').innerHTML = h;
+}
+
+function visibleTasks(){
+  let arr = [...S.tasks.entries()].map(([id, t]) => ({ id, t }));
+  const closed = closedStatus();
+  if(UI.status !== 'all') arr = arr.filter(x => x.t.status === UI.status);
+  else if(UI.hideDone) arr = arr.filter(x => x.t.status !== closed);
+  const q = UI.q.trim().toLowerCase();
+  if(q) arr = arr.filter(x => taskSearchText(x.t).includes(q));
+  arr.sort((a, b) => UI.sort === 'desc' ? (b.t.sr || 0) - (a.t.sr || 0) : (a.t.sr || 0) - (b.t.sr || 0));
+  return arr;
+}
+function statusSelect(id, st){
+  const opts = S.statuses.includes(st) ? S.statuses : [st, ...S.statuses];
+  return `<select class="status-sel ${statusClass(st)}" data-sid="${esc(id)}" aria-label="Status">${opts.map(s => `<option${s === st ? ' selected' : ''}>${esc(s)}</option>`).join('')}</select>`;
+}
+function personCell(pid, date, showAge, closed){
+  if(!pid && !date) return '<span class="dash">—</span>';
+  let h = pid ? chipHTML(pid) : '';
+  if(date){ const d = daysSince(date); const age = showAge && !closed && d != null && d > 0 ? ` <span class="age">· ${d}d</span>` : ''; h += `<span class="when">${esc(fmtDate(date))}${age}</span>`; }
+  return h;
+}
+function attCell(t){ const a = (t.attachments || []).map(fileChipHTML).filter(Boolean); return a.length ? `<div class="att-cell">${a.join('')}</div>` : '<span class="dash">—</span>'; }
+
+function renderList(){
+  const list = $('#list');
+  if(!S.loaded){ list.innerHTML = `<div class="empty"><h2>Opening your register</h2><p>Loading tasks from your ${STORE_NAME}.</p></div>`; return; }
+  if(!S.tasks.size){
+    list.innerHTML = `<div class="empty"><h2>No tasks yet</h2><p>Add your first task. In any field, type <b>@</b> to pick or create a person, brand or project. On iPad, write the description with your Pencil.</p><button type="button" class="btn primary" data-act="new">+ New task</button></div>`;
+    return;
+  }
+  const rows = visibleTasks();
+  if(!rows.length){ list.innerHTML = `<div class="empty"><h2>Nothing matches</h2><p>No tasks fit this search or filter. Try “All”, or untick “Hide ${esc(closedStatus())}”.</p></div>`; return; }
+  const closed = closedStatus();
+  if(wide.matches){
+    let h = `<div class="sheet"><table><thead><tr><th>Sr</th><th>Brand / Project</th><th>Description</th><th>Received from</th><th>Assigned to</th><th>Status</th><th>Remarks</th><th>Attachments</th></tr></thead><tbody>`;
+    for(const { id, t } of rows){
+      const isC = t.status === closed;
+      h += `<tr data-id="${esc(id)}" class="${isC ? 'closed' : ''}">
+        <td class="c-sr">${t.sr}</td>
+        <td class="c-proj">${t.projectId ? chipHTML(t.projectId) : '<span class="dash">—</span>'}</td>
+        <td class="c-desc">${t.desc ? `<div class="rt">${renderMarkup(t.desc)}</div>` : ''}${t.hasInk ? inkThumb(S.ink.get(id)) : ''}${!t.desc && !t.hasInk ? '<span class="dash">—</span>' : ''}</td>
+        <td class="c-person">${personCell(t.fromId, t.fromDate, false, isC)}</td>
+        <td class="c-person">${personCell(t.toId, t.toDate, true, isC)}</td>
+        <td class="c-status">${statusSelect(id, t.status)}</td>
+        <td class="c-rem">${t.remarks ? `<div class="rt">${renderMarkup(t.remarks)}</div>` : '<span class="dash">—</span>'}</td>
+        <td class="c-att">${attCell(t)}</td></tr>`;
+    }
+    list.innerHTML = h + '</tbody></table></div>';
+  } else {
+    let h = '<div class="cards">';
+    for(const { id, t } of rows){
+      const isC = t.status === closed;
+      const att = (t.attachments || []).map(fileChipHTML).filter(Boolean);
+      h += `<article class="card${isC ? ' closed' : ''}" data-id="${esc(id)}">
+        <div class="card-top"><div class="left"><span class="sr">#${t.sr}</span>${t.projectId ? chipHTML(t.projectId) : ''}</div>${statusSelect(id, t.status)}</div>
+        ${t.desc ? `<div class="desc rt">${renderMarkup(t.desc)}</div>` : ''}${t.hasInk ? inkThumb(S.ink.get(id)) : ''}
+        <dl class="kv">
+          ${t.fromId || t.fromDate ? `<dt>From</dt><dd>${personCell(t.fromId, t.fromDate, false, isC)}</dd>` : ''}
+          ${t.toId || t.toDate ? `<dt>To</dt><dd>${personCell(t.toId, t.toDate, true, isC)}</dd>` : ''}
+          ${t.remarks ? `<dt>Remarks</dt><dd class="rt">${renderMarkup(t.remarks)}</dd>` : ''}
+          ${att.length ? `<dt>Files</dt><dd class="att-cell">${att.join('')}</dd>` : ''}
+        </dl></article>`;
+    }
+    list.innerHTML = h + '</div>';
+  }
+}
+
+function renderDir(){
+  const type = UI.view; const isLink = type === 'link';
+  const closed = closedStatus();
+  const q = UI.q.trim().toLowerCase();
+  const rows = [...S.entities.entries()]
+    .filter(([, e]) => isLink ? (e.type === 'link' || e.type === 'file') : e.type === type)
+    .filter(([, e]) => !q || e.name.toLowerCase().includes(q))
+    .map(([id, e]) => { const r = refsOf(id); const ids = allRefs(r); let open = 0; for(const tid of ids){ const t = S.tasks.get(tid); if(t && t.status !== closed) open++; } return { id, e, total:ids.size, open, r }; })
+    .sort((a, b) => b.open - a.open || a.e.name.localeCompare(b.e.name));
+  const title = { project:'Brands & projects', person:'People', link:'Links & files' }[type];
+  const add = isLink
+    ? `<form class="addrow" id="addForm" novalidate><input id="addIn" type="url" placeholder="Paste a web link (https://…)" aria-label="New link"><button class="btn" type="submit">Add link</button><button class="btn" type="button" id="addFile">Upload file</button></form>`
+    : `<form class="addrow" id="addForm" novalidate><input id="addIn" placeholder="${type === 'person' ? 'New person’s name' : 'New brand or project'}" aria-label="New name"><button class="btn" type="submit">Add</button></form>`;
+  let h = `<div class="dir-head"><h2>${title}</h2>${add}</div>`;
+  if(!rows.length) h += `<div class="empty"><p>${q ? 'Nothing matches your search.' : 'None yet. Add one here, or type <b>@</b> in a task to create it on the go.'}</p></div>`;
+  else {
+    h += '<div class="dir-list">';
+    for(const { id, e, total, open, r } of rows){
+      let meta = `${open} open · ${total} total`;
+      if(type === 'person') meta = `${r.to.length} assigned · ${r.from.length} received · ${open} open`;
+      if(isLink) meta = (e.type === 'file' ? 'File' + (e.size ? ' · ' + fmtSize(e.size) : '') : esc(e.url || '')) + (total ? ` · ${total} task${total > 1 ? 's' : ''}` : '');
+      h += `<button type="button" class="dir-item" data-ent="${esc(id)}"><span class="nm"><span class="chip t-${e.type}">${icon(e.type)}${esc(e.name)}</span></span><span class="meta">${meta}</span></button>`;
+    }
+    h += '</div>';
+  }
+  $('#viewDir').innerHTML = h;
+}
+
+/* ---------- Popup (mention suggestions) ---------- */
+const POP = { el:$('#pop'), owner:null, items:[], idx:0, onPick:null };
+function suggest(q, types, excludeTask){
+  q = q.trim(); const ql = q.toLowerCase(); const out = [];
+  const isUrl = /^(https?:\/\/|www\.)\S+$/i.test(q);
+  if(isUrl && types.includes('link')) out.push({ kind:'link', url:/^www\./i.test(q) ? 'https://' + q : q });
+  const ents = [...S.entities.entries()].filter(([, e]) => types.includes(e.type) && (!ql || e.name.toLowerCase().includes(ql)));
+  ents.sort((a, b) => { const as = a[1].name.toLowerCase().startsWith(ql) ? 0 : 1, bs = b[1].name.toLowerCase().startsWith(ql) ? 0 : 1; return as - bs || (b[1].createdAt || 0) - (a[1].createdAt || 0); });
+  for(const [id, e] of ents.slice(0, 7)) out.push({ kind:'ref', id, type:e.type, label:e.name, sub:TYPE_LABEL[e.type] });
+  if(types.includes('task') && ql && !isUrl){
+    let n = 0;
+    for(const [tid, t] of [...S.tasks.entries()].sort((a, b) => b[1].sr - a[1].sr)){
+      if(tid === excludeTask) continue;
+      const txt = ('#' + t.sr + ' ' + plainText(t.desc)).toLowerCase();
+      if(txt.includes(ql) || String(t.sr) === ql.replace('#', '')){ out.push({ kind:'ref', id:'t:' + tid, type:'task', label:'#' + t.sr + ' ' + shortText(t.desc, 40), sub:t.status }); if(++n >= 4) break; }
+    }
+  }
+  if(q && !isUrl && !ents.some(([, e]) => e.name.toLowerCase() === ql)){
+    if(types.includes('person')) out.push({ kind:'create', type:'person', name:q });
+    if(types.includes('project')) out.push({ kind:'create', type:'project', name:q });
+  }
+  if(types.includes('link') && !q) out.push({ kind:'hint', label:'Paste a web link after @ to link it' });
+  if(types.includes('file')) out.push({ kind:'file' });
+  return out;
+}
+function popItemHTML(it, i){
+  const on = i === POP.idx ? ' on' : '';
+  if(it.kind === 'hint') return `<div class="pop-item pop-hint">${esc(it.label)}</div>`;
+  if(it.kind === 'ref') return `<button type="button" class="pop-item${on}" data-i="${i}" role="option"><span class="pop-ico t-${it.type}">${icon(it.type)}</span><span class="lb">${esc(it.label)}</span><span class="sb">${esc(it.sub || '')}</span></button>`;
+  if(it.kind === 'create') return `<button type="button" class="pop-item${on}" data-i="${i}" role="option"><span class="pop-ico t-${it.type}">${ICONS.plus}</span><span class="lb">Add ${it.type === 'person' ? 'person' : 'project'} “${esc(it.name)}”</span></button>`;
+  if(it.kind === 'link') return `<button type="button" class="pop-item${on}" data-i="${i}" role="option"><span class="pop-ico t-link">${icon('link')}</span><span class="lb">Link ${esc(it.url)}</span></button>`;
+  if(it.kind === 'file') return `<button type="button" class="pop-item${on}" data-i="${i}" role="option"><span class="pop-ico t-file">${icon('file')}</span><span class="lb">Upload a file…</span></button>`;
+  return '';
+}
+const selectable = it => it.kind !== 'hint';
+function openPop(owner, rect, items, onPick){
+  if(!items.some(selectable)){ closePop(); return; }
+  POP.owner = owner; POP.items = items; POP.onPick = onPick; POP.idx = items.findIndex(selectable);
+  POP.el.innerHTML = items.map(popItemHTML).join('') + `<div class="pop-foot">↑↓ to move · Enter to pick · Esc to close</div>`;
+  POP.el.hidden = false;
+  const vv = window.visualViewport; const vh = vv ? vv.height + vv.offsetTop : innerHeight;
+  const w = POP.el.offsetWidth, hh = POP.el.offsetHeight;
+  const left = Math.min(Math.max(8, rect.left), innerWidth - w - 8);
+  let top = rect.bottom + 6; if(top + hh > vh - 8) top = Math.max(8, rect.top - hh - 6);
+  POP.el.style.left = left + 'px'; POP.el.style.top = top + 'px';
+}
+function closePop(){ POP.el.hidden = true; POP.owner = null; POP.items = []; POP.onPick = null; }
+function movePop(d){
+  const n = POP.items.length; let i = POP.idx;
+  for(let k = 0; k < n; k++){ i = (i + d + n) % n; if(selectable(POP.items[i])) break; }
+  POP.idx = i; $$('.pop-item', POP.el).forEach(b => b.classList.toggle('on', Number(b.dataset.i) === i));
+  const cur = $(`.pop-item[data-i="${i}"]`, POP.el); cur && cur.scrollIntoView({ block:'nearest' });
+}
+function pickPop(i){ const it = POP.items[i]; const cb = POP.onPick; closePop(); if(it && cb) cb(it); }
+function popKey(e){
+  if(POP.el.hidden) return false;
+  if(e.key === 'ArrowDown'){ e.preventDefault(); movePop(1); return true; }
+  if(e.key === 'ArrowUp'){ e.preventDefault(); movePop(-1); return true; }
+  if(e.key === 'Enter' || e.key === 'Tab'){ e.preventDefault(); pickPop(POP.idx); return true; }
+  if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); closePop(); return true; }
+  return false;
+}
+POP.el.addEventListener('pointerdown', e => e.preventDefault());
+POP.el.addEventListener('mousedown', e => e.preventDefault());
+POP.el.addEventListener('click', e => { const b = e.target.closest('.pop-item[data-i]'); if(b) pickPop(Number(b.dataset.i)); });
+
+/* ---------- Creating people, projects, links, files ---------- */
+function saveEntityRemote(e){ S.entities.set(e.id, e); scheduleRender(); return write('saveEntity', JSON.stringify(e)).catch(() => {}); }
+function createEntity(type, name, extra = {}){ const id = uid('e'); saveEntityRemote({ id, type, name:name.trim().slice(0, 120), createdAt:Date.now(), ...extra }); return id; }
+function linkName(url){ try { const u = new URL(url); const p = u.hostname.replace(/^www\./, '') + (u.pathname !== '/' ? u.pathname : ''); return p.length > 42 ? p.slice(0, 41) + '…' : p; } catch(e){ return url.slice(0, 42); } }
+function linkEntity(url){ url = /^https?:\/\//i.test(url) ? url : 'https://' + url; for(const [id, e] of S.entities) if(e.type === 'link' && e.url === url) return id; return createEntity('link', linkName(url), { url }); }
+function pickFile(){
+  return new Promise(resolve => {
+    const fi = $('#fileIn'); fi.value = '';
+    fi.onchange = () => resolve(fi.files && fi.files[0] || null);
+    fi.addEventListener('cancel', () => resolve(null), { once:true });
+    fi.click();
+  });
+}
+function readB64(f){ return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => rej(r.error); r.readAsDataURL(f); }); }
+async function uploadFile(){
+  const f = await pickFile(); if(!f) return null;
+  if(f.size > S.maxUploadMb * 1048576){ toast(`That file is ${fmtSize(f.size)}. The limit is ${S.maxUploadMb} MB, so add it as a Drive or OneDrive link instead.`); return null; }
+  toast('Uploading ' + f.name + '…', 60000);
+  try {
+    const b64 = BACKEND === 'graph' ? '' : await readB64(f);
+    const r = await write('uploadFile', f.name, f.type || 'application/octet-stream', b64, f);
+    const e = JSON.parse(r); S.entities.set(e.id, e); scheduleRender();
+    toast('Attached ' + f.name); return e.id;
+  } catch(err){ return null; }
+}
+async function resolvePick(it){
+  if(it.kind === 'ref') return it.id;
+  if(it.kind === 'create') return createEntity(it.type, it.name);
+  if(it.kind === 'link') return linkEntity(it.url);
+  if(it.kind === 'file') return uploadFile();
+  return null;
+}
+
+/* ---------- Rich (mention) editor ---------- */
+function makeChip(id, label){
+  const r = refInfo(id); const s = document.createElement('span');
+  const type = r.exists ? r.type : 'gone';
+  s.className = 'chip t-' + type; s.contentEditable = 'false'; s.dataset.ref = id; s.dataset.label = r.exists ? r.name : (label || 'Removed');
+  s.innerHTML = icon(type) + esc(s.dataset.label);
+  return s;
+}
+function setRich(el, markup){
+  el.innerHTML = '';
+  for(const p of parseMarkup(markup)){
+    if(p.t != null){ p.t.split('\n').forEach((ln, i) => { if(i) el.appendChild(document.createElement('br')); if(ln) el.appendChild(document.createTextNode(ln)); }); }
+    else el.appendChild(makeChip(p.id, p.label));
+  }
+}
+function getRich(el){
+  let out = '';
+  const walk = n => {
+    for(const c of n.childNodes){
+      if(c.nodeType === 3) out += c.data.replace(/ /g, ' ');
+      else if(c.nodeType === 1){
+        if(c.dataset && c.dataset.ref) out += `@[${(c.dataset.label || '').replace(/[\]\n]/g, '')}](${c.dataset.ref})`;
+        else if(c.tagName === 'BR') out += '\n';
+        else { const block = /^(DIV|P|LI)$/.test(c.tagName); if(block && out && !out.endsWith('\n')) out += '\n'; walk(c); }
+      }
+    }
+  };
+  walk(el);
+  return out.replace(/\s+$/, '').replace(/^\n+/, '');
+}
+function mentionQuery(el){
+  const sel = getSelection(); if(!sel || !sel.rangeCount) return null;
+  const r = sel.getRangeAt(0); if(!r.collapsed) return null;
+  const node = r.startContainer; if(node.nodeType !== 3 || !el.contains(node)) return null;
+  const before = node.data.slice(0, r.startOffset).replace(/ /g, ' ');
+  const m = before.match(/(^|[\s(])@([^@\n]{0,40})$/); if(!m) return null;
+  return { node, start:r.startOffset - m[2].length - 1, end:r.startOffset, q:m[2] };
+}
+function caretRect(el){
+  const sel = getSelection();
+  if(sel && sel.rangeCount){ const r = sel.getRangeAt(0).cloneRange(); const rects = r.getClientRects(); if(rects.length) return rects[rects.length - 1]; const b = r.getBoundingClientRect(); if(b.width || b.height || b.top) return b; }
+  return el.getBoundingClientRect();
+}
+function insertChip(el, m, id){
+  el.focus({ preventScroll:true });
+  const r = document.createRange();
+  if(m && el.contains(m.node) && m.node.data.length >= m.end){ r.setStart(m.node, m.start); r.setEnd(m.node, m.end); r.deleteContents(); }
+  else { r.selectNodeContents(el); r.collapse(false); }
+  const chip = makeChip(id); const sp = document.createTextNode(' ');
+  r.insertNode(sp); r.insertNode(chip);
+  const r2 = document.createRange(); r2.setStart(sp, 1); r2.collapse(true);
+  const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r2);
+}
+function richSuggest(el){
+  const m = mentionQuery(el);
+  const isUrl = m && /^(https?:\/\/|www\.)/i.test(m.q);
+  if(!m || (!isUrl && /\s{2}$|[,.;:!?()]/.test(m.q)) || m.q.trim().split(/\s+/).length > 3){ if(POP.owner === el) closePop(); return; }
+  const items = suggest(m.q, ALL_TYPES, ED && ED.id);
+  openPop(el, caretRect(el), items, async it => { const id = await resolvePick(it); if(id) insertChip(el, m, id); });
+}
+function mountRich(el){
+  el.addEventListener('input', () => richSuggest(el));
+  el.addEventListener('keydown', e => { if(POP.owner === el && popKey(e)) return; });
+  el.addEventListener('keyup', e => { if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) richSuggest(el); });
+  el.addEventListener('blur', () => setTimeout(() => { if(POP.owner === el && document.activeElement !== el) closePop(); }, 150));
+  el.addEventListener('paste', e => {
+    e.preventDefault(); const t = (e.clipboardData || window.clipboardData).getData('text/plain');
+    if(!document.execCommand('insertText', false, t)){ const s = getSelection(); if(s.rangeCount){ const r = s.getRangeAt(0); r.deleteContents(); r.insertNode(document.createTextNode(t)); r.collapse(false); } }
+  });
+  el.addEventListener('drop', e => e.preventDefault());
+}
+
+/* ---------- Single-value picker ---------- */
+function mountPicker(el){
+  const lbl = el.closest('.field').querySelector('.lbl');
+  el.innerHTML = `<span class="pk-val"></span><input type="text" autocomplete="off" autocapitalize="words" id="${el.id}In" placeholder="${esc(el.dataset.ph)}"${lbl && lbl.id ? ` aria-labelledby="${lbl.id}"` : ''}>`;
+  const input = $('input', el); const types = el.dataset.types.split(',');
+  const sug = () => {
+    const q = input.value.replace(/^@/, '');
+    openPop(el, input.getBoundingClientRect(), suggest(q, types), async it => {
+      const id = await resolvePick(it); if(!id) return;
+      setPicker(el, id); input.value = '';
+      if(el.id === 'pkFrom' && !$('#edFromDate').value) $('#edFromDate').value = today();
+      if(el.id === 'pkTo' && !$('#edToDate').value) $('#edToDate').value = today();
+    });
+  };
+  input.addEventListener('input', sug);
+  input.addEventListener('focus', sug);
+  input.addEventListener('keydown', e => { if(POP.owner === el && popKey(e)) return; if(e.key === 'Backspace' && !input.value && el._val) setPicker(el, null); });
+  input.addEventListener('blur', () => setTimeout(() => { if(POP.owner === el && document.activeElement !== input) closePop(); }, 150));
+  el.addEventListener('click', e => {
+    if(e.target.closest('.pk-x')){ setPicker(el, null); input.focus(); return; }
+    if(!el._val) input.focus();
+  });
+}
+function setPicker(el, id){
+  el._val = id || null;
+  const v = $('.pk-val', el), input = $('input', el);
+  if(id){ v.innerHTML = chipHTML(id, '', false) + `<button type="button" class="pk-x" aria-label="Remove">×</button>`; input.hidden = true; }
+  else { v.innerHTML = ''; input.hidden = false; }
+}
+
+/* ---------- Ink pad (Apple Pencil) ----------
+   iPad: Safari gives Pencil input as touch events with touchType "stylus" and force.
+   We read those directly because:
+   - Safari samples Pencil movement more often in touchmove than pointermove (smoother lines).
+   - Calling preventDefault on touchstart/touchmove stops iPadOS Scribble from taking strokes
+     that land on the pad (known WebKit issue).
+   - touchType lets us ignore your palm and fingers while you write.
+   Other devices (mouse, Android stylus, Windows pen) use pointer events. */
+const IOS_TOUCH = (() => { try { return typeof Touch !== 'undefined' && 'touchType' in Touch.prototype; } catch(e){ return false; } })();
+const IS_IPAD = /iPad/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+const PAD = { c:$('#pad'), ctx:null, strokes:[], h:320, cur:null, src:null, pid:null, tool:'pen', color:'ink', width:2.2, finger:false, penSeen:false, hist:[], erasing:false, warned:false };
+PAD.ctx = PAD.c.getContext('2d');
+try { PAD.finger = localStorage.getItem('fr-finger') === '1'; } catch(e){}
+function padLayout(){
+  const c = PAD.c, w = c.clientWidth; if(!w) return;
+  const dpr = Math.min(3, window.devicePixelRatio || 1); const cssH = PAD.h * w / 1000;
+  c.style.height = cssH + 'px'; c.width = Math.round(w * dpr); c.height = Math.round(cssH * dpr);
+  const k = dpr * w / 1000; PAD.ctx.setTransform(k, 0, 0, k, 0, 0);
+  padDraw();
+}
+function padDraw(){
+  const ctx = PAD.ctx; ctx.clearRect(0, 0, 1000, PAD.h);
+  ctx.strokeStyle = '#DCE5F3'; ctx.lineWidth = 1;
+  for(let y = 44; y < PAD.h; y += 44){ ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(1000, y); ctx.stroke(); }
+  ctx.strokeStyle = '#F1C9C4'; ctx.beginPath(); ctx.moveTo(56, 0); ctx.lineTo(56, PAD.h); ctx.stroke();
+  for(const s of PAD.strokes) drawStroke(s, 3);
+  if(PAD.cur) drawStroke(PAD.cur, 3);
+  const n = JSON.stringify(encodeInk(PAD.strokes, PAD.h)).length;
+  $('#inkSize').textContent = PAD.strokes.length ? Math.max(1, Math.round(n / 1024)) + ' KB' : '';
+}
+/* Smooth line: a curve through the midpoints, width from pressure */
+function drawStroke(s, from){
+  const ctx = PAD.ctx; ctx.strokeStyle = INK[s.c] || INK.ink; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  const p = s.p;
+  if(p.length === 3){ ctx.fillStyle = ctx.strokeStyle; ctx.beginPath(); ctx.arc(p[0], p[1], s.w * .8, 0, Math.PI * 2); ctx.fill(); return; }
+  for(let i = Math.max(3, from); i < p.length; i += 3){
+    const x0 = i >= 6 ? (p[i-6] + p[i-3]) / 2 : p[i-3], y0 = i >= 6 ? (p[i-5] + p[i-2]) / 2 : p[i-2];
+    const x1 = (p[i-3] + p[i]) / 2, y1 = (p[i-2] + p[i+1]) / 2;
+    ctx.lineWidth = s.w * (0.55 + (p[i+2] / 100) * 0.9);
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.quadraticCurveTo(p[i-3], p[i-2], x1, y1);
+    if(i + 3 >= p.length) ctx.lineTo(p[i], p[i+1]);
+    ctx.stroke();
+  }
+}
+function ptFrom(clientX, clientY, pressure){
+  const r = PAD.c.getBoundingClientRect(); const k = 1000 / r.width;
+  return [Math.round((clientX - r.left) * k * 10) / 10, Math.round((clientY - r.top) * k * 10) / 10, Math.round(Math.min(1, Math.max(0, pressure)) * 100)];
+}
+function eraseAt(pt){
+  const before = PAD.strokes.length;
+  PAD.strokes = PAD.strokes.filter(s => { for(let i = 0; i < s.p.length; i += 3){ if(Math.hypot(s.p[i] - pt[0], s.p[i+1] - pt[1]) < 14) return false; } return true; });
+  if(PAD.strokes.length !== before){ if(ED) ED.inkDirty = true; padDraw(); }
+}
+function strokeStart(pt, src, id){
+  if(PAD.cur || PAD.erasing) return false;
+  PAD.src = src; PAD.pid = id;
+  PAD.hist.push(PAD.strokes.slice()); if(PAD.hist.length > 60) PAD.hist.shift();
+  if(PAD.tool === 'erase'){ PAD.erasing = true; eraseAt(pt); return true; }
+  PAD.cur = { c:PAD.color, w:PAD.width, p:pt.slice() };
+  drawStroke(PAD.cur, 0);
+  return true;
+}
+function strokeMove(pt){
+  if(PAD.erasing){ eraseAt(pt); return; }
+  if(!PAD.cur) return;
+  const p = PAD.cur.p, n = p.length;
+  if(Math.hypot(pt[0] - p[n-3], pt[1] - p[n-2]) < 1) return;
+  p.push(...pt); drawStroke(PAD.cur, p.length - 3);
+}
+function strokeEnd(){
+  const src = PAD.src; PAD.src = null; PAD.pid = null;
+  if(PAD.erasing){ PAD.erasing = false; return; }
+  if(!PAD.cur) return;
+  PAD.strokes.push(PAD.cur);
+  const p = PAD.cur.p; let maxY = 0; for(let i = 1; i < p.length; i += 3) maxY = Math.max(maxY, p[i]);
+  PAD.cur = null; if(ED) ED.inkDirty = true;
+  // Writing near the bottom? Add another few lines automatically.
+  if(maxY > PAD.h - 70 && PAD.h < 2400){ PAD.h = Math.min(2400, PAD.h + 176); padLayout(); }
+  else padDraw();
+  return src;
+}
+function fingerBlocked(){
+  if(!PAD.penSeen && !PAD.warned){ PAD.warned = true; toast('Write with your Apple Pencil. To draw with a finger, tap “Finger” first.'); }
+}
+
+/* iPad (Safari, Chrome and every iPad browser use the same engine) */
+function touchPressure(t){ return t.touchType === 'stylus' && t.force > 0 ? t.force : 0.5; }
+PAD.c.addEventListener('touchstart', e => {
+  e.preventDefault();                                   // keeps Scribble, scrolling and zoom off the pad
+  for(const t of e.changedTouches){
+    const stylus = t.touchType === 'stylus';
+    if(stylus) PAD.penSeen = true;
+    if(!stylus && !PAD.finger){ fingerBlocked(); continue; } // palm or finger: ignore
+    if(PAD.src === 'pointer'){ PAD.cur = null; PAD.erasing = false; PAD.src = null; PAD.hist.pop(); } // touch input takes over from the duplicate pointer event
+    strokeStart(ptFrom(t.clientX, t.clientY, touchPressure(t)), 'touch', t.identifier);
+  }
+}, { passive:false });
+PAD.c.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if(PAD.src !== 'touch') return;
+  for(const t of e.changedTouches) if(t.identifier === PAD.pid) strokeMove(ptFrom(t.clientX, t.clientY, touchPressure(t)));
+}, { passive:false });
+const touchEnd = e => {
+  if(e.cancelable) e.preventDefault();
+  if(PAD.src !== 'touch') return;
+  for(const t of e.changedTouches) if(t.identifier === PAD.pid) strokeEnd();
+};
+PAD.c.addEventListener('touchend', touchEnd, { passive:false });
+PAD.c.addEventListener('touchcancel', touchEnd, { passive:false });
+
+/* Mouse, Android and Windows pens, and fingers on non-Apple devices */
+PAD.c.addEventListener('pointerdown', e => {
+  if(IOS_TOUCH && e.pointerType !== 'mouse') return;     // handled by the touch events above
+  if(PAD.src === 'touch') return;
+  if(e.pointerType === 'pen') PAD.penSeen = true;
+  if(e.pointerType === 'touch' && !PAD.finger){ fingerBlocked(); return; }
+  if(e.pointerType === 'mouse' && e.button !== 0) return;
+  e.preventDefault();
+  try { PAD.c.setPointerCapture(e.pointerId); } catch(err){}
+  strokeStart(ptFrom(e.clientX, e.clientY, e.pointerType === 'pen' ? (e.pressure || 0.5) : 0.5), 'pointer', e.pointerId);
+});
+PAD.c.addEventListener('pointermove', e => {
+  if(PAD.src !== 'pointer' || e.pointerId !== PAD.pid) return;
+  let evs = []; try { evs = e.getCoalescedEvents ? e.getCoalescedEvents() : []; } catch(err){}
+  for(const ev of (evs.length ? evs : [e])) strokeMove(ptFrom(ev.clientX, ev.clientY, ev.pointerType === 'pen' ? (ev.pressure || 0.5) : 0.5));
+});
+const pointerEnd = e => { if(PAD.src === 'pointer' && e.pointerId === PAD.pid) strokeEnd(); };
+PAD.c.addEventListener('pointerup', pointerEnd);
+PAD.c.addEventListener('pointercancel', pointerEnd);
+PAD.c.addEventListener('contextmenu', e => e.preventDefault());
+
+$('#inkTools').addEventListener('click', e => {
+  const sw = e.target.closest('.swatch');
+  if(sw){ PAD.color = sw.dataset.color; $$('.swatch').forEach(b => b.setAttribute('aria-pressed', String(b === sw))); setTool('pen'); return; }
+  const t = e.target.closest('[data-tool]'); if(t) setTool(t.dataset.tool);
+});
+function setTool(t){ PAD.tool = t; $$('[data-tool]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tool === t))); }
+function syncFingerBtn(){ $('#inkFinger').setAttribute('aria-pressed', String(PAD.finger)); }
+$('#inkFinger').addEventListener('click', () => { PAD.finger = !PAD.finger; syncFingerBtn(); try { localStorage.setItem('fr-finger', PAD.finger ? '1' : '0'); } catch(e){} });
+$('#inkUndo').addEventListener('click', () => { if(!PAD.hist.length) return; PAD.strokes = PAD.hist.pop(); if(ED) ED.inkDirty = true; padDraw(); });
+$('#inkTaller').addEventListener('click', () => { if(PAD.h >= 2400) return; PAD.h += 220; padLayout(); if(ED) ED.inkDirty = true; });
+let clearArm = 0;
+$('#inkClear').addEventListener('click', () => {
+  const b = $('#inkClear');
+  if(!PAD.strokes.length) return;
+  if(Date.now() - clearArm < 3000){ PAD.hist.push(PAD.strokes.slice()); PAD.strokes = []; if(ED) ED.inkDirty = true; padDraw(); b.textContent = 'Clear'; clearArm = 0; return; }
+  clearArm = Date.now(); b.textContent = 'Tap again to clear';
+  setTimeout(() => { if(Date.now() - clearArm >= 2900) b.textContent = 'Clear'; }, 3000);
+});
+if(window.ResizeObserver) new ResizeObserver(() => { if(!$('#editor').hidden) padLayout(); }).observe(PAD.c);
+
+/* ---------- Task editor ---------- */
+let ED = null;
+['pkProject','pkFrom','pkTo'].forEach(id => mountPicker($('#' + id)));
+mountRich($('#edDesc')); mountRich($('#edRem'));
+if(IS_IPAD || IOS_TOUCH) $('#descHint').textContent = 'Write in this box with Pencil to turn it into text, or on the pad to keep your handwriting';
+
+function renderStatusSeg(cur){
+  $('#edStatus').innerHTML = (S.statuses.includes(cur) ? S.statuses : [cur, ...S.statuses]).map(s =>
+    `<button type="button" data-s="${esc(s)}" aria-pressed="${s === cur}" class="${s === cur ? statusClass(s) : ''}">${esc(s)}</button>`).join('');
+}
+$('#edStatus').addEventListener('click', e => { const b = e.target.closest('button[data-s]'); if(b && ED){ ED.status = b.dataset.s; renderStatusSeg(ED.status); } });
+
+function renderAtt(){
+  const box = $('#edAtt'); if(!ED) return;
+  box.innerHTML = ED.attachments.length
+    ? ED.attachments.map(id => { const e = S.entities.get(id); if(!e) return '';
+        return `<span class="att-item">${fileChipHTML(id)}${e.size ? `<span class="att-size">${fmtSize(e.size)}</span>` : ''}<button type="button" class="pk-x" data-rm="${esc(id)}" aria-label="Remove ${esc(e.name)}">×</button></span>`; }).join('')
+    : '<span class="none">No files or links yet.</span>';
+}
+$('#edAtt').addEventListener('click', e => { const b = e.target.closest('[data-rm]'); if(b && ED){ ED.attachments = ED.attachments.filter(x => x !== b.dataset.rm); renderAtt(); } });
+$('#attFileBtn').addEventListener('click', async () => { const id = await uploadFile(); if(id && ED && !ED.attachments.includes(id)){ ED.attachments.push(id); renderAtt(); } });
+$('#attLinkForm').addEventListener('submit', e => {
+  e.preventDefault(); const v = $('#attLinkIn').value.trim(); if(!v || !ED) return;
+  const id = linkEntity(v); if(!ED.attachments.includes(id)) ED.attachments.push(id);
+  $('#attLinkIn').value = ''; renderAtt();
+});
+
+function collect(){
+  return { projectId:$('#pkProject')._val || null, desc:getRich($('#edDesc')),
+    fromId:$('#pkFrom')._val || null, fromDate:$('#edFromDate').value || '',
+    toId:$('#pkTo')._val || null, toDate:$('#edToDate').value || '',
+    status:ED.status, remarks:getRich($('#edRem')), attachments:ED.attachments.slice() };
+}
+const sig = () => JSON.stringify(collect());
+
+function openEditor(id){
+  closeEntity(); closePop();
+  const t = id ? clone(S.tasks.get(id)) : null;
+  if(id && !t){ toast('That task was deleted.'); return; }
+  ED = { id:id || null, status:t ? t.status : S.statuses[0], inkDirty:false, attachments:t && Array.isArray(t.attachments) ? t.attachments.slice() : [] };
+  $('#edEyebrow').textContent = id ? 'Task' : 'New task';
+  $('#edTitle').textContent = 'Sr No ' + (id ? t.sr : nextSr());
+  setPicker($('#pkProject'), t && t.projectId); setPicker($('#pkFrom'), t && t.fromId); setPicker($('#pkTo'), t && t.toId);
+  $$('.picker input').forEach(i => i.value = '');
+  $('#edFromDate').value = t ? String(t.fromDate || '').slice(0, 10) : ''; $('#edToDate').value = t ? String(t.toDate || '').slice(0, 10) : '';
+  setRich($('#edDesc'), t ? t.desc : ''); setRich($('#edRem'), t ? t.remarks : '');
+  renderStatusSeg(ED.status); renderAtt(); renderRelated();
+  $('#attLinkIn').value = '';
+  $('#attHint').textContent = REMOTE ? `Any file type up to ${S.maxUploadMb} MB, saved to your ${STORE_NAME}` : 'Until setup is finished, files up to 2 MB are kept in this browser';
+  const ink = id ? S.ink.get(id) : null;
+  PAD.strokes = decodeInk(clone(ink)); PAD.h = ink && ink.h ? ink.h : 320; PAD.hist = []; PAD.cur = null; setTool('pen'); syncFingerBtn();
+  $('#edDanger').hidden = !id;
+  $('#edMeta').textContent = t && t.updatedAt ? 'Last saved ' + new Date(t.updatedAt).toLocaleString(undefined, { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '';
+  $('#edDelete').textContent = 'Delete task'; delArm = 0;
+  $('#edDiscard').hidden = true;
+  $('#scrim').hidden = false; $('#editor').hidden = false; $('#edBody').scrollTop = 0;
+  requestAnimationFrame(padLayout);
+  ED.sig = sig();
+  if(!id) setTimeout(() => $('#pkProjectIn').focus({ preventScroll:true }), 60);
+}
+function isDirty(){ return ED && (ED.inkDirty || sig() !== ED.sig); }
+function closeEditor(force){
+  if(!ED) return;
+  if(!force && isDirty()){ $('#edDiscard').hidden = false; $('#edBody').scrollTop = 0; return; }
+  closePop(); ED = null; $('#editor').hidden = true; syncScrim();
+}
+function saveTaskRemote(id, task, opts = {}){
+  task.id = id;
+  S.tasks.set(id, task);
+  const payload = { task, isNew:!!opts.isNew };
+  if(opts.ink !== undefined){ payload.ink = opts.ink; if(opts.ink) S.ink.set(id, opts.ink); else S.ink.delete(id); }
+  scheduleRender();
+  return write('saveTask', JSON.stringify(payload)).then(r => { const t = JSON.parse(r); S.tasks.set(t.id, t); scheduleRender(); return t; }).catch(() => null);
+}
+function saveEditor(){
+  if(!ED) return;
+  const data = collect();
+  if(!data.desc && !PAD.strokes.length && !data.projectId && !data.remarks && !data.attachments.length){ toast('Add a description, handwriting or project first.'); return; }
+  if(PAD.strokes.length){ const n = JSON.stringify(encodeInk(PAD.strokes, PAD.h)).length; if(n > 240000){ toast('The handwriting is too large to save. Erase some of it or split it into two tasks.'); return; } }
+  const now = Date.now(); let id = ED.id; const isNew = !id;
+  const base = id ? clone(S.tasks.get(id)) || {} : {};
+  const task = Object.assign(base, data, { mentions:[...new Set([...mentionIds(data.desc), ...mentionIds(data.remarks)])], hasInk:PAD.strokes.length > 0, updatedAt:now });
+  if(isNew){ id = uid('t'); task.sr = nextSr(); task.createdAt = now; }
+  const opts = { isNew };
+  if(ED.inkDirty || isNew) opts.ink = PAD.strokes.length ? encodeInk(PAD.strokes, PAD.h) : (S.ink.has(id) ? null : undefined);
+  saveTaskRemote(id, task, opts);
+  closeEditor(true);
+  toast((isNew ? 'Added task ' : 'Saved task ') + task.sr);
+}
+let delArm = 0;
+$('#edDelete').addEventListener('click', () => {
+  if(!ED || !ED.id) return;
+  if(Date.now() - delArm < 4000){
+    const id = ED.id, sr = S.tasks.get(id) && S.tasks.get(id).sr;
+    S.tasks.delete(id); S.ink.delete(id); scheduleRender();
+    write('deleteTask', id).catch(() => {});
+    closeEditor(true); toast('Deleted task ' + sr); return;
+  }
+  delArm = Date.now(); $('#edDelete').textContent = 'Tap again to delete';
+});
+$('#edSave').addEventListener('click', saveEditor);
+$('#edClose').addEventListener('click', () => closeEditor(false));
+$('#edDiscardYes').addEventListener('click', () => closeEditor(true));
+$('#edDiscardNo').addEventListener('click', () => { $('#edDiscard').hidden = true; });
+
+/* ---------- Entity panel (Capacities-style page) ---------- */
+let ENT = null, entDelArm = 0;
+function syncScrim(){ $('#scrim').hidden = $('#editor').hidden && $('#entity').hidden && $('#modal').hidden; }
+function openEntity(id){
+  if(id.startsWith('t:')){ openEditor(id.slice(2)); return; }
+  if(!S.entities.has(id)){ toast('That item was removed.'); return; }
+  closePop(); ENT = id; entDelArm = 0;
+  $('#entName').value = S.entities.get(id).name;
+  renderEntity();
+  $('#entity').hidden = false; syncScrim();
+}
+function closeEntity(){ ENT = null; $('#entity').hidden = true; syncScrim(); }
+function taskRows(ids){
+  const closed = closedStatus();
+  ids = [...new Set(ids)].filter(t => S.tasks.has(t)).sort((a, b) => S.tasks.get(b).sr - S.tasks.get(a).sr);
+  if(!ids.length) return '<div class="none">None.</div>';
+  return '<div class="grp-list">' + ids.map(tid => { const t = S.tasks.get(tid);
+    return `<button type="button" class="trow" data-open="${esc(tid)}"><span class="sr">#${t.sr}</span><span class="tx${t.status === closed ? ' muted' : ''}">${esc(shortText(t.desc, 90) || (t.hasInk ? 'Handwritten note' : 'No description'))}</span><span class="pill ${statusClass(t.status)}">${esc(t.status)}</span></button>`; }).join('') + '</div>';
+}
+function renderEntity(){
+  const e = S.entities.get(ENT); if(!e){ closeEntity(); return; }
+  $('#entTitleLbl').textContent = TYPE_LABEL[e.type];
+  if(document.activeElement !== $('#entName')) $('#entName').value = e.name;
+  const r = refsOf(ENT);
+  let h = '';
+  h += `<div><button type="button" class="btn small" data-showmap>See on mind map</button></div>`;
+  if(e.type === 'link') h += `<div class="field"><div class="lbl">Web address</div><div class="urlrow"><input id="entUrl" type="url" value="${esc(e.url || '')}" aria-label="Web address"><a class="linkbtn" href="${esc(safeUrl(e.url))}" target="_blank" rel="noopener">Open link ↗</a></div></div>`;
+  if(e.type === 'file') h += `<div class="field"><div class="lbl">File</div><div class="urlrow"><a class="linkbtn" href="${esc(safeUrl(e.url))}" target="_blank" rel="noopener">Open ${esc(e.name)} ↗</a><span class="none" style="align-self:center">${fmtSize(e.size)}</span></div></div>`;
+  if(e.type === 'project') h += `<div class="grp"><h3>Tasks in this brand / project</h3>${taskRows(r.project)}</div>`;
+  if(e.type === 'person') h += `<div class="grp"><h3>Assigned to ${esc(e.name)}</h3>${taskRows(r.to)}</div><div class="grp"><h3>Received from ${esc(e.name)}</h3>${taskRows(r.from)}</div>`;
+  if(e.type === 'file' || e.type === 'link') h += `<div class="grp"><h3>Attached to</h3>${taskRows(r.attached)}</div>`;
+  h += `<div class="grp"><h3>Mentioned in</h3>${taskRows(r.mentioned)}</div>`;
+  const used = allRefs(r).size;
+  h += `<div class="danger-zone">${used ? `<span>Linked to ${used} task${used > 1 ? 's' : ''}. Remove it from those tasks before deleting.</span>` : `<button type="button" class="btn small danger" id="entDelete">${entDelArm ? 'Tap again to delete' : 'Delete ' + TYPE_LABEL[e.type].toLowerCase()}</button>${e.type === 'file' ? '<span>The file also moves to your Drive bin.</span>' : ''}`}</div>`;
+  $('#entBody').innerHTML = h;
+}
+$('#entName').addEventListener('change', () => {
+  const v = $('#entName').value.trim(); const e = S.entities.get(ENT);
+  if(!e) return; if(!v){ $('#entName').value = e.name; return; }
+  if(v !== e.name){ saveEntityRemote({ ...clone(e), name:v.slice(0, 120) }); toast('Renamed. Every task shows the new name.'); }
+});
+$('#entName').addEventListener('keydown', e => { if(e.key === 'Enter') e.target.blur(); });
+$('#entBody').addEventListener('change', e => {
+  if(e.target.id === 'entUrl'){ const v = e.target.value.trim(); const en = S.entities.get(ENT); if(en && v && v !== en.url) saveEntityRemote({ ...clone(en), url:/^https?:\/\//i.test(v) ? v : 'https://' + v }); }
+});
+$('#entBody').addEventListener('click', e => {
+  const o = e.target.closest('[data-open]'); if(o){ openEditor(o.dataset.open); return; }
+  if(e.target.closest('[data-showmap]')){ const id = ENT; closeEntity(); showOnMap(id); return; }
+  if(e.target.id === 'entDelete'){
+    if(!entDelArm){ entDelArm = Date.now(); renderEntity(); return; }
+    const id = ENT; S.entities.delete(id); write('deleteEntity', id).catch(() => {}); closeEntity(); scheduleRender(); toast('Deleted');
+  }
+});
+$('#entClose').addEventListener('click', closeEntity);
+
+/* ---------- Mind map ----------
+   Bubbles: tasks (ring = status colour) and the things you tagged with @
+   (brand/project, person, link, file). Lines: the tagging between them.
+   "Tasks only" joins tasks directly when they share a tag. */
+const MAP = { c:$('#mapCanvas'), ctx:null, wrap:$('#mapWrap'), nodes:new Map(), edges:[], adj:new Map(), pos:new Map(),
+  sel:null, hover:null, k:1, tx:0, ty:0, alpha:0, raf:0, sig:'', fitted:false, w:0, h:0, dpr:1,
+  mode:'tags', showDone:false, showLone:false, hiddenLone:0, colors:null, ptrs:new Map(), drag:null, pinch:null, centerOn:null };
+MAP.ctx = MAP.c.getContext('2d');
+try { const m = JSON.parse(localStorage.getItem('fr-map') || '{}'); if(m.mode) MAP.mode = m.mode; MAP.showDone = !!m.showDone; MAP.showLone = !!m.showLone; } catch(e){}
+function saveMapPrefs(){ try { localStorage.setItem('fr-map', JSON.stringify({ mode:MAP.mode, showDone:MAP.showDone, showLone:MAP.showLone })); } catch(e){} }
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function hashXY(id){
+  let h = 2166136261; for(let i = 0; i < id.length; i++){ h ^= id.charCodeAt(i); h = Math.imul(h, 16777619); }
+  const a = ((h >>> 0) % 6283) / 1000, r = 80 + ((h >>> 8) % 220);
+  return [Math.cos(a) * r, Math.sin(a) * r];
+}
+function mapColors(){
+  const cs = getComputedStyle(document.documentElement); const g = n => cs.getPropertyValue(n).trim();
+  return { fg:g('--fg'), muted:g('--muted'), line:g('--line-strong'), surface:g('--surface'), accent:g('--accent'),
+    project:g('--project'), person:g('--person'), link:g('--link'), file:g('--link'), task:g('--task'),
+    st:{ 'st-open':g('--st-open'), 'st-prog':g('--st-prog'), 'st-wait':g('--st-wait'), 'st-done':g('--st-done') },
+    font:getComputedStyle(document.body).fontFamily };
+}
+const REL = { project:'Brand / Project', from:'Received from', to:'Assigned to', mention:'Mentioned', attached:'Attached' };
+function taskTags(t){
+  const out = [];
+  const add = (id, rel) => { if(!id) return; if(id.startsWith('t:') ? S.tasks.has(id.slice(2)) : S.entities.has(id)) out.push([id, rel]); };
+  add(t.projectId, REL.project); add(t.fromId, REL.from); add(t.toId, REL.to);
+  (t.mentions || []).forEach(m => add(m, REL.mention)); (t.attachments || []).forEach(a => add(a, REL.attached));
+  return out;
+}
+function taskLabel(t){ const d = shortText(t.desc, 30); return '#' + t.sr + (d ? ' ' + d : t.hasInk ? ' Handwritten note' : ''); }
+
+function buildGraph(){
+  const closed = closedStatus(); const nodes = new Map(); const edges = new Map();
+  const tasks = [...S.tasks.entries()].filter(([, t]) => MAP.showDone || t.status !== closed);
+  for(const [id, t] of tasks) nodes.set('t:' + id, { id:'t:' + id, kind:'task', tid:id, label:taskLabel(t), status:t.status });
+  const addEdge = (a, b, via) => {
+    if(a === b) return; const key = a < b ? a + '|' + b : b + '|' + a; const e = edges.get(key);
+    if(e){ if(!e.via.includes(via)) e.via.push(via); } else edges.set(key, { a, b, via:[via] });
+  };
+  if(MAP.mode === 'tags'){
+    for(const [id, t] of tasks) for(const [ref, rel] of taskTags(t)){
+      if(ref.startsWith('t:')){ if(nodes.has(ref)) addEdge('t:' + id, ref, REL.mention); continue; }
+      if(!nodes.has(ref)){ const e = S.entities.get(ref); nodes.set(ref, { id:ref, kind:e.type, label:e.name }); }
+      addEdge('t:' + id, ref, rel);
+    }
+  } else {
+    const groups = new Map();
+    for(const [id, t] of tasks) for(const [ref] of taskTags(t)){
+      if(ref.startsWith('t:')){ if(nodes.has(ref)) addEdge('t:' + id, ref, REL.mention); continue; }
+      if(!groups.has(ref)) groups.set(ref, []);
+      const g = groups.get(ref); if(!g.includes('t:' + id)) g.push('t:' + id);
+    }
+    for(const [ref, g] of groups){
+      const via = '@' + refInfo(ref).name;
+      if(g.length <= 8){ for(let i = 0; i < g.length; i++) for(let j = i + 1; j < g.length; j++) addEdge(g[i], g[j], via); }
+      else { g.sort((a, b) => S.tasks.get(a.slice(2)).sr - S.tasks.get(b.slice(2)).sr); for(let i = 0; i < g.length; i++) addEdge(g[i], g[(i + 1) % g.length], via); }
+    }
+  }
+  const adj = new Map(); for(const id of nodes.keys()) adj.set(id, new Set());
+  for(const e of edges.values()){ adj.get(e.a).add(e.b); adj.get(e.b).add(e.a); }
+  let lone = 0;
+  for(const [id, n] of [...nodes]) if(n.kind === 'task' && !adj.get(id).size && !MAP.showLone){ nodes.delete(id); adj.delete(id); lone++; }
+  return { nodes, edges:[...edges.values()], adj, lone };
+}
+function nodeRadius(n){
+  const d = n.deg || 0;
+  if(n.kind === 'task') return 8 + Math.min(5, d * .8);
+  if(n.kind === 'project') return 12 + Math.min(12, d * 1.2);
+  if(n.kind === 'person') return 10 + Math.min(10, d);
+  return 8 + Math.min(6, d);
+}
+
+function mapUpdate(){
+  const g = buildGraph();
+  for(const [id, n] of g.nodes){
+    const old = MAP.nodes.get(id);
+    if(old){ n.x = old.x; n.y = old.y; n.vx = old.vx || 0; n.vy = old.vy || 0; }
+    else if(MAP.pos.has(id)){ const p = MAP.pos.get(id); n.x = p[0]; n.y = p[1]; n.vx = n.vy = 0; }
+    else {
+      let near = null;
+      for(const nb of g.adj.get(id) || []){ const o = g.nodes.get(nb); if(o && o.x != null){ near = o; break; } const m = MAP.nodes.get(nb); if(m){ near = m; break; } }
+      const [hx, hy] = hashXY(id);
+      if(near){ n.x = near.x + hx * .3; n.y = near.y + hy * .3; } else { n.x = hx; n.y = hy; }
+      n.vx = n.vy = 0;
+    }
+    n.deg = g.adj.get(id).size; n.r = nodeRadius(n);
+  }
+  MAP.nodes = g.nodes; MAP.edges = g.edges; MAP.adj = g.adj; MAP.hiddenLone = g.lone;
+  if(MAP.sel && !g.nodes.has(MAP.sel)) MAP.sel = null;
+  if(MAP.hover && !g.nodes.has(MAP.hover)) MAP.hover = null;
+  MAP.colors = mapColors();
+  const sig = [...g.nodes.keys()].join(',') + '#' + g.edges.map(e => e.a + '|' + e.b).join(',');
+  const first = !MAP.sig;
+  if(sig !== MAP.sig){ MAP.alpha = Math.max(MAP.alpha, first ? 1 : 0.35); MAP.sig = sig; }
+  mapSize();
+  if(first || REDUCED){ let i = 0; while(MAP.alpha > 0 && i++ < (first ? 220 : 400)) mapTick(); }
+  if(first || !MAP.fitted){ mapFit(); MAP.fitted = MAP.nodes.size > 0; }
+  if(MAP.centerOn){ const n = MAP.nodes.get(MAP.centerOn); if(n){ MAP.sel = n.id; if(MAP.k < 0.9) MAP.k = 0.9; MAP.tx = MAP.w / 2 - n.x * MAP.k; MAP.ty = MAP.h / 2 - n.y * MAP.k; } MAP.centerOn = null; }
+  renderMapChrome();
+  mapDraw(); mapKick();
+}
+
+function mapSize(){
+  const wrap = MAP.wrap; const top = wrap.getBoundingClientRect().top;
+  const h = Math.max(380, Math.round(window.innerHeight - Math.max(0, top) - 56));
+  wrap.style.height = h + 'px';
+  const w = wrap.clientWidth; const dpr = Math.min(2.5, window.devicePixelRatio || 1);
+  if(w === MAP.w && h === MAP.h && dpr === MAP.dpr) return;
+  if(MAP.w){ MAP.tx += (w - MAP.w) / 2; MAP.ty += (h - MAP.h) / 2; } else { MAP.tx = w / 2; MAP.ty = h / 2; }
+  MAP.w = w; MAP.h = h; MAP.dpr = dpr;
+  MAP.c.width = Math.round(w * dpr); MAP.c.height = Math.round(h * dpr);
+  MAP.c.style.width = w + 'px'; MAP.c.style.height = h + 'px';
+}
+
+function mapTick(){
+  const N = [...MAP.nodes.values()]; const a = MAP.alpha; const n = N.length;
+  for(let i = 0; i < n; i++){
+    const p = N[i];
+    for(let j = i + 1; j < n; j++){
+      const q = N[j]; let dx = q.x - p.x, dy = q.y - p.y; let d2 = dx * dx + dy * dy;
+      if(d2 > 360000) continue;
+      if(d2 < 1){ dx = Math.random() - .5; dy = Math.random() - .5; d2 = 1; }
+      const d = Math.sqrt(d2); const minD = p.r + q.r + 34;
+      let f = 5200 * a / d2; if(d < minD) f += (minD - d) * 0.5;
+      const fx = dx / d * f, fy = dy / d * f;
+      p.vx -= fx; p.vy -= fy; q.vx += fx; q.vy += fy;
+    }
+  }
+  const L = MAP.mode === 'tags' ? 95 : 150;
+  for(const e of MAP.edges){
+    const p = MAP.nodes.get(e.a), q = MAP.nodes.get(e.b);
+    const dx = q.x - p.x, dy = q.y - p.y; const d = Math.sqrt(dx * dx + dy * dy) || 1;
+    const f = (d - (L + p.r + q.r)) * 0.05 * a; const fx = dx / d * f, fy = dy / d * f;
+    p.vx += fx; p.vy += fy; q.vx -= fx; q.vy -= fy;
+  }
+  for(const p of N){
+    p.vx -= p.x * 0.0045 * a; p.vy -= p.y * 0.0045 * a;
+    if(MAP.drag && MAP.drag.node === p){ p.vx = p.vy = 0; continue; }
+    p.vx *= 0.55; p.vy *= 0.55; p.x += p.vx; p.y += p.vy;
+  }
+  MAP.alpha *= 0.982; if(MAP.alpha < 0.004) MAP.alpha = 0;
+}
+function mapKick(){ if(!MAP.raf && UI.view === 'map') MAP.raf = requestAnimationFrame(mapFrame); }
+function mapFrame(){
+  MAP.raf = 0; if(UI.view !== 'map') return;
+  if(MAP.alpha > 0){ mapTick(); mapTick(); }
+  mapDraw();
+  if(MAP.alpha > 0 || MAP.drag) mapKick();
+}
+function mapFit(){
+  if(!MAP.nodes.size){ MAP.k = 1; MAP.tx = MAP.w / 2; MAP.ty = MAP.h / 2; return; }
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for(const n of MAP.nodes.values()){ x0 = Math.min(x0, n.x - n.r); y0 = Math.min(y0, n.y - n.r); x1 = Math.max(x1, n.x + n.r); y1 = Math.max(y1, n.y + n.r); }
+  const pad = 70; const k = Math.max(0.2, Math.min(1.6, (MAP.w - pad * 2) / Math.max(1, x1 - x0), (MAP.h - pad * 2) / Math.max(1, y1 - y0)));
+  MAP.k = k; MAP.tx = MAP.w / 2 - (x0 + x1) / 2 * k; MAP.ty = MAP.h / 2 - (y0 + y1) / 2 * k;
+}
+function mapZoom(f, px = MAP.w / 2, py = MAP.h / 2){
+  const k = Math.max(0.2, Math.min(4, MAP.k * f)); const r = k / MAP.k;
+  MAP.tx = px - (px - MAP.tx) * r; MAP.ty = py - (py - MAP.ty) * r; MAP.k = k; mapDraw();
+}
+
+function nodeColor(n){ const C = MAP.colors; return n.kind === 'task' ? (C.st[statusClass(n.status)] || C.task) : (C[n.kind] || C.task); }
+function mapDraw(){
+  const ctx = MAP.ctx, C = MAP.colors; if(!C) return;
+  ctx.setTransform(MAP.dpr, 0, 0, MAP.dpr, 0, 0); ctx.clearRect(0, 0, MAP.w, MAP.h);
+  const focus = MAP.sel || MAP.hover; const nb = focus ? MAP.adj.get(focus) || new Set() : null;
+  const q = UI.q.trim().toLowerCase();
+  const hit = q ? new Set([...MAP.nodes.values()].filter(n => n.label.toLowerCase().includes(q)).map(n => n.id)) : null;
+  const lit = id => focus ? (id === focus || nb.has(id)) : hit ? hit.has(id) : true;
+  const k = MAP.k, tx = MAP.tx, ty = MAP.ty;
+  const X = n => n.x * k + tx, Y = n => n.y * k + ty;
+
+  ctx.lineCap = 'round';
+  for(const e of MAP.edges){
+    const p = MAP.nodes.get(e.a), r = MAP.nodes.get(e.b);
+    const on = focus ? (e.a === focus || e.b === focus) : hit ? (hit.has(e.a) && hit.has(e.b)) : true;
+    ctx.globalAlpha = on ? (focus ? 0.95 : 0.5) : 0.07;
+    ctx.strokeStyle = on && focus ? C.accent : C.line;
+    ctx.lineWidth = on && focus ? 2 : 1.2;
+    ctx.beginPath(); ctx.moveTo(X(p), Y(p)); ctx.lineTo(X(r), Y(r)); ctx.stroke();
+  }
+  for(const n of MAP.nodes.values()){
+    const x = X(n), y = Y(n), rr = Math.max(3, n.r * Math.min(1.25, Math.max(0.55, k)));
+    if(x < -40 || y < -40 || x > MAP.w + 40 || y > MAP.h + 40) continue;
+    ctx.globalAlpha = lit(n.id) ? 1 : 0.16;
+    const col = nodeColor(n);
+    ctx.beginPath(); ctx.arc(x, y, rr, 0, Math.PI * 2);
+    if(n.kind === 'task'){ ctx.fillStyle = C.surface; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = col; ctx.stroke(); }
+    else { ctx.fillStyle = col; ctx.fill(); }
+    if(n.id === MAP.sel){ ctx.globalAlpha = 1; ctx.lineWidth = 2; ctx.strokeStyle = C.accent; ctx.beginPath(); ctx.arc(x, y, rr + 5, 0, Math.PI * 2); ctx.stroke(); }
+  }
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.lineJoin = 'round';
+  for(const n of MAP.nodes.values()){
+    const isLit = lit(n.id);
+    const show = n.id === focus || (focus && nb.has(n.id)) || (hit && hit.has(n.id)) || (!focus && !hit && (n.kind !== 'task' || MAP.mode === 'tasks' || k >= 1.4));
+    if(!show) continue;
+    const x = X(n), y = Y(n), rr = Math.max(3, n.r * Math.min(1.25, Math.max(0.55, k)));
+    if(x < -80 || y < -40 || x > MAP.w + 80 || y > MAP.h + 40) continue;
+    let label = n.label; if(label.length > 34) label = label.slice(0, 33) + '…';
+    ctx.font = (n.kind === 'task' ? '500 12px ' : '600 12.5px ') + C.font;
+    ctx.globalAlpha = isLit ? 1 : 0.3;
+    ctx.lineWidth = 4; ctx.strokeStyle = C.surface; ctx.strokeText(label, x, y + rr + 4);
+    ctx.fillStyle = n.kind === 'task' ? C.fg : nodeColor(n); ctx.fillText(label, x, y + rr + 4);
+  }
+  ctx.globalAlpha = 1;
+}
+
+function mapLocal(e){ const r = MAP.c.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; }
+function mapHit(pt){
+  let best = null, bd = Infinity;
+  for(const n of MAP.nodes.values()){
+    const x = n.x * MAP.k + MAP.tx, y = n.y * MAP.k + MAP.ty; const rr = Math.max(3, n.r * Math.min(1.25, Math.max(0.55, MAP.k)));
+    const d = Math.hypot(pt.x - x, pt.y - y); if(d < rr + 10 && d < bd){ best = n; bd = d; }
+  }
+  return best;
+}
+function mapOpen(id){
+  if(id.startsWith('t:')) openEditor(id.slice(2)); else openEntity(id);
+}
+function mapTap(n){
+  if(!n){ MAP.sel = null; }
+  else if(MAP.sel === n.id){ mapOpen(n.id); return; }
+  else MAP.sel = n.id;
+  renderMapCard(); mapDraw();
+}
+MAP.c.addEventListener('pointerdown', e => {
+  e.preventDefault();
+  try { MAP.c.setPointerCapture(e.pointerId); } catch(err){}
+  const pt = mapLocal(e); MAP.ptrs.set(e.pointerId, pt);
+  if(MAP.ptrs.size === 2){
+    const [a, b] = [...MAP.ptrs.values()];
+    MAP.pinch = { d:Math.hypot(a.x - b.x, a.y - b.y) || 1, k:MAP.k, mx:(a.x + b.x) / 2, my:(a.y + b.y) / 2, tx:MAP.tx, ty:MAP.ty };
+    if(MAP.drag && MAP.drag.node) MAP.drag.node.vx = MAP.drag.node.vy = 0;
+    MAP.drag = null; return;
+  }
+  if(MAP.ptrs.size > 2) return;
+  const node = mapHit(pt);
+  MAP.drag = { id:e.pointerId, node, sx:pt.x, sy:pt.y, tx:MAP.tx, ty:MAP.ty, moved:false };
+  MAP.c.classList.add('dragging');
+});
+MAP.c.addEventListener('pointermove', e => {
+  const pt = mapLocal(e);
+  if(MAP.ptrs.has(e.pointerId)) MAP.ptrs.set(e.pointerId, pt);
+  if(MAP.pinch && MAP.ptrs.size >= 2){
+    const [a, b] = [...MAP.ptrs.values()]; const P = MAP.pinch;
+    const k = Math.max(0.2, Math.min(4, P.k * (Math.hypot(a.x - b.x, a.y - b.y) / P.d)));
+    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    MAP.tx = mx - (P.mx - P.tx) * (k / P.k); MAP.ty = my - (P.my - P.ty) * (k / P.k); MAP.k = k;
+    mapDraw(); return;
+  }
+  const D = MAP.drag;
+  if(D && D.id === e.pointerId){
+    const dx = pt.x - D.sx, dy = pt.y - D.sy;
+    if(!D.moved && Math.hypot(dx, dy) > 6) D.moved = true;
+    if(!D.moved) return;
+    if(D.node){ D.node.x = (pt.x - MAP.tx) / MAP.k; D.node.y = (pt.y - MAP.ty) / MAP.k; MAP.alpha = Math.max(MAP.alpha, 0.2); mapKick(); }
+    else { MAP.tx = D.tx + dx; MAP.ty = D.ty + dy; mapDraw(); }
+    return;
+  }
+  if(e.pointerType === 'mouse' && !e.buttons){
+    const n = mapHit(pt); const id = n ? n.id : null;
+    MAP.c.classList.toggle('over', !!n);
+    if(id !== MAP.hover){ MAP.hover = id; mapDraw(); }
+  }
+});
+function mapUp(e){
+  MAP.ptrs.delete(e.pointerId);
+  if(MAP.pinch){ if(MAP.ptrs.size < 2) MAP.pinch = null; if(!MAP.ptrs.size) MAP.c.classList.remove('dragging'); return; }
+  const D = MAP.drag; if(!D || D.id !== e.pointerId) return;
+  MAP.drag = null; MAP.c.classList.remove('dragging');
+  if(D.node && D.moved) MAP.pos.set(D.node.id, [D.node.x, D.node.y]);
+  if(!D.moved && e.type === 'pointerup') mapTap(D.node);
+}
+MAP.c.addEventListener('pointerup', mapUp);
+MAP.c.addEventListener('pointercancel', mapUp);
+MAP.c.addEventListener('pointerleave', e => { if(e.pointerType === 'mouse' && MAP.hover){ MAP.hover = null; MAP.c.classList.remove('over'); mapDraw(); } });
+MAP.c.addEventListener('wheel', e => { e.preventDefault(); const pt = mapLocal(e); mapZoom(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0018)), pt.x, pt.y); }, { passive:false });
+MAP.c.addEventListener('contextmenu', e => e.preventDefault());
+MAP.c.addEventListener('touchmove', e => e.preventDefault(), { passive:false });
+MAP.c.addEventListener('keydown', e => {
+  if(e.key === '+' || e.key === '='){ mapZoom(1.2); } else if(e.key === '-'){ mapZoom(1 / 1.2); }
+  else if(e.key === 'Escape' && MAP.sel){ MAP.sel = null; renderMapCard(); mapDraw(); e.stopPropagation(); }
+  else if(e.key === 'Enter' && MAP.sel) mapOpen(MAP.sel);
+});
+
+function renderMapChrome(){
+  $$('#mapMode button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === MAP.mode)));
+  $('#mapDone').checked = MAP.showDone; $('#mapDoneLbl').textContent = 'Show ' + closedStatus();
+  $('#mapLone').checked = MAP.showLone;
+  const C = MAP.colors;
+  const lg = [];
+  if(MAP.mode === 'tags') lg.push(['project','Brand / Project'], ['person','Person'], ['link','Link / File']);
+  $('#mapLegend').innerHTML = lg.map(([t, l]) => `<span class="lg"><i style="background:${C[t]}"></i>${l}</span>`).join('')
+    + `<span class="lg"><i class="ring" style="border-color:${C.st['st-open']}"></i>Task (ring shows status)</span>`
+    + (MAP.hiddenLone ? `<span class="lg">${MAP.hiddenLone} untagged task${MAP.hiddenLone > 1 ? 's' : ''} hidden</span>` : '');
+  const empty = $('#mapEmpty');
+  if(!MAP.nodes.size){
+    empty.hidden = false;
+    empty.innerHTML = S.tasks.size
+      ? `<div><b>No links to show yet.</b><br>Tag tasks with an @brand or project, @person, link or file, and they join up here.${!MAP.showDone ? '<br>Tick “Show ' + esc(closedStatus()) + '” to include finished tasks.' : ''}</div>`
+      : `<div><b>Your mind map appears here.</b><br>Add tasks and tag them with @ to see how they connect.</div>`;
+  } else empty.hidden = true;
+  renderMapCard();
+}
+function renderMapCard(){
+  const card = $('#mapCard'); const n = MAP.sel && MAP.nodes.get(MAP.sel);
+  if(!n){ card.hidden = true; return; }
+  const kindLabel = n.kind === 'task' ? 'Task' : TYPE_LABEL[n.kind];
+  const nbs = [...(MAP.adj.get(n.id) || [])].map(id => {
+    const o = MAP.nodes.get(id); const e = MAP.edges.find(x => (x.a === n.id && x.b === id) || (x.b === n.id && x.a === id));
+    return { o, via:e ? e.via.join(', ') : '' };
+  }).sort((a, b) => (a.o.kind === 'task') - (b.o.kind === 'task') || a.o.label.localeCompare(b.o.label));
+  const t = n.kind === 'task' ? S.tasks.get(n.tid) : null;
+  card.innerHTML = `<div class="card-head"><div style="min-width:0"><div class="eyebrow">${esc(kindLabel)}</div><div class="t">${esc(n.label)}</div></div>${t ? `<span class="pill ${statusClass(t.status)}">${esc(t.status)}</span>` : ''}</div>
+    <div class="nbs"><div class="eyebrow">${nbs.length} link${nbs.length === 1 ? '' : 's'}</div>${nbs.map(({ o, via }) =>
+      `<button type="button" class="nb" data-sel="${esc(o.id)}"><span class="dot ${o.kind === 'task' ? 'ring' : ''}" style="${o.kind === 'task' ? 'border-color:' + nodeColor(o) : 'background:' + nodeColor(o)}"></span><span class="nl">${esc(o.label)}</span><span class="via">${esc(via)}</span></button>`).join('')}</div>
+    <div class="acts"><button type="button" class="btn small" data-mapclear>Close</button><button type="button" class="btn small primary" data-mapopen>Open ${n.kind === 'task' ? 'task' : esc(kindLabel.toLowerCase())}</button></div>`;
+  card.hidden = false;
+}
+$('#mapCard').addEventListener('click', e => {
+  const s = e.target.closest('[data-sel]');
+  if(s){ const n = MAP.nodes.get(s.dataset.sel); if(n){ MAP.sel = n.id; const x = n.x * MAP.k + MAP.tx, y = n.y * MAP.k + MAP.ty; if(x < 40 || y < 40 || x > MAP.w - 40 || y > MAP.h - 40){ MAP.tx = MAP.w / 2 - n.x * MAP.k; MAP.ty = MAP.h / 2 - n.y * MAP.k; } renderMapCard(); mapDraw(); } return; }
+  if(e.target.closest('[data-mapopen]') && MAP.sel){ mapOpen(MAP.sel); return; }
+  if(e.target.closest('[data-mapclear]')){ MAP.sel = null; renderMapCard(); mapDraw(); }
+});
+$('#mapMode').addEventListener('click', e => {
+  const b = e.target.closest('[data-mode]'); if(!b || b.dataset.mode === MAP.mode) return;
+  MAP.mode = b.dataset.mode; MAP.sel = null; MAP.sig = ''; MAP.fitted = false; saveMapPrefs(); mapUpdate();
+});
+$('#mapDone').addEventListener('change', e => { MAP.showDone = e.target.checked; saveMapPrefs(); mapUpdate(); });
+$('#mapLone').addEventListener('change', e => { MAP.showLone = e.target.checked; saveMapPrefs(); mapUpdate(); });
+$('#mapFit').addEventListener('click', () => { mapFit(); mapDraw(); });
+$('#mapZoomIn').addEventListener('click', () => mapZoom(1.25));
+$('#mapZoomOut').addEventListener('click', () => mapZoom(1 / 1.25));
+if(window.ResizeObserver) new ResizeObserver(() => { if(UI.view === 'map'){ mapSize(); mapDraw(); } }).observe(MAP.wrap);
+window.addEventListener('resize', () => { if(UI.view === 'map'){ mapSize(); mapDraw(); } });
+const darkMQ = matchMedia('(prefers-color-scheme: dark)');
+(darkMQ.addEventListener ? darkMQ.addEventListener.bind(darkMQ, 'change') : darkMQ.addListener.bind(darkMQ))(() => { MAP.colors = mapColors(); mapDraw(); });
+
+function showOnMap(id){
+  if(!id.startsWith('t:') && MAP.mode !== 'tags'){ MAP.mode = 'tags'; MAP.sig = ''; saveMapPrefs(); }
+  if(id.startsWith('t:')){ const t = S.tasks.get(id.slice(2)); if(t && t.status === closedStatus() && !MAP.showDone){ MAP.showDone = true; saveMapPrefs(); } }
+  if(id.startsWith('t:')){ const t = S.tasks.get(id.slice(2)); if(t && !taskTags(t).length && !MAP.showLone){ MAP.showLone = true; saveMapPrefs(); } }
+  MAP.centerOn = id;
+  UI.view = 'map'; saveUI(); scheduleRender();
+}
+
+/* Tasks that share a tag with this one (or mention it) */
+function relatedTasks(id){
+  const t = S.tasks.get(id); if(!t) return [];
+  const mine = new Map(taskTags(t).filter(([r]) => !r.startsWith('t:')).map(([r]) => [r, true]));
+  const out = [];
+  for(const [oid, o] of S.tasks){
+    if(oid === id) continue;
+    const via = [];
+    for(const [r] of taskTags(o)) if(mine.has(r)){ const nm = '@' + refInfo(r).name; if(!via.includes(nm)) via.push(nm); }
+    if((t.mentions || []).includes('t:' + oid) || (o.mentions || []).includes('t:' + id)) via.unshift('mentioned');
+    if(via.length) out.push({ id:oid, t:o, via });
+  }
+  return out.sort((a, b) => b.via.length - a.via.length || b.t.sr - a.t.sr);
+}
+function renderRelated(){
+  const box = $('#edLinks'); const field = $('#edLinksField');
+  if(!ED || !ED.id){ field.hidden = true; return; }
+  field.hidden = false;
+  const rel = relatedTasks(ED.id); const closed = closedStatus();
+  box.innerHTML = rel.length ? '<div class="grp-list">' + rel.slice(0, 30).map(({ id, t, via }) =>
+    `<button type="button" class="trow" data-rel="${esc(id)}"><span class="sr">#${t.sr}</span><span class="tx${t.status === closed ? ' muted' : ''}">${esc(shortText(t.desc, 80) || (t.hasInk ? 'Handwritten note' : 'No description'))}<span class="via">via ${esc(via.join(', '))}</span></span><span class="pill ${statusClass(t.status)}">${esc(t.status)}</span></button>`).join('') + '</div>'
+    : '<span class="none">No other task shares a tag with this one yet.</span>';
+}
+$('#edLinks').addEventListener('click', e => {
+  const b = e.target.closest('[data-rel]'); if(!b) return;
+  if(isDirty()){ toast('Save or close this task first.'); return; }
+  openEditor(b.dataset.rel);
+});
+$('#edMapBtn').addEventListener('click', () => {
+  if(!ED || !ED.id) return;
+  if(isDirty()){ toast('Save this task first, then open the mind map.'); return; }
+  const id = ED.id; closeEditor(true); showOnMap('t:' + id);
+});
+
+/* ---------- Statuses ---------- */
+function openSettings(){
+  $('#statusText').value = S.statuses.join('\n');
+  const acct = BACKEND === 'graph' && AUTH.account;
+  $('#acctLine').hidden = !acct; if(acct) $('#acctName').textContent = acct.username || acct.name || '';
+  $('#modal').hidden = false; syncScrim();
+}
+$('#signOutBtn').addEventListener('click', () => { signOut(); });
+$('#signInBtn').addEventListener('click', () => { $('#gateErr').hidden = true; signIn().catch(e => showGate((e && e.message) || 'Sign-in did not start.')); });
+
+function showGate(msg){
+  $('#gate').hidden = false;
+  const er = $('#gateErr'); er.hidden = !msg; er.textContent = msg || '';
+}
+function closeSettings(){ $('#modal').hidden = true; syncScrim(); }
+$('#settingsBtn').addEventListener('click', openSettings);
+$('#modalCancel').addEventListener('click', closeSettings);
+$('#modalSave').addEventListener('click', () => {
+  const list = [...new Set($('#statusText').value.split('\n').map(s => s.trim()).filter(Boolean))].slice(0, 12);
+  if(list.length < 2){ toast('Keep at least two statuses.'); return; }
+  S.statuses = list; write('saveSettings', JSON.stringify({ statuses:list })).catch(() => {});
+  closeSettings(); if(UI.status !== 'all' && !S.statuses.includes(UI.status)) UI.status = 'all'; scheduleRender(); toast('Statuses saved');
+});
+
+/* ---------- Export to Excel (CSV) ---------- */
+function buildCsv(){
+  const cell = v => { v = String(v ?? ''); if(/^[=+\-@]/.test(v)) v = "'" + v; return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+  const rows = [['Sr No','Brand / Project','Description','Handwritten note','Received from','Received date','Assigned to','Assigned date','Current status','Remarks','Attachments']];
+  for(const t of [...S.tasks.values()].sort((a, b) => a.sr - b.sr))
+    rows.push([t.sr, refInfo(t.projectId).name, plainText(t.desc), t.hasInk ? 'Yes' : '', refInfo(t.fromId).name, t.fromDate, refInfo(t.toId).name, t.toDate, t.status, plainText(t.remarks),
+      (t.attachments || []).map(a => { const e = S.entities.get(a); return e ? e.name + (e.url && !/^data:/.test(e.url) ? ' (' + e.url + ')' : '') : ''; }).filter(Boolean).join('; ')]);
+  return '\ufeff' + rows.map(r => r.map(cell).join(',')).join('\r\n');
+}
+$('#exportBtn').addEventListener('click', async () => {
+  if(!S.tasks.size){ toast('There are no tasks to export yet.'); return; }
+  if(!REMOTE){
+    try { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([buildCsv()], { type:'text/csv' })); a.download = 'follow-up-register-' + today() + '.csv'; document.body.appendChild(a); a.click(); a.remove(); }
+    catch(e){ toast('Export is not available in this browser.'); }
+    return;
+  }
+  toast('Creating the Excel file in your Drive…', 30000);
+  try { const r = JSON.parse(await call('exportCsv')); toastLink('Saved to ' + STORE_NAME + ' › Exports.', 'Open ' + r.name, r.url); }
+  catch(e){ toast('Could not export: ' + ((e && e.message) || 'try again.')); }
+});
+
+/* ---------- Global events ---------- */
+$('#newBtn').addEventListener('click', () => openEditor(null));
+$('#refreshBtn').addEventListener('click', () => { refresh().then(() => toast('Up to date')); });
+$('#q').addEventListener('input', e => { UI.q = e.target.value; scheduleRender(); });
+$('#hideDone').addEventListener('change', e => { UI.hideDone = e.target.checked; saveUI(); scheduleRender(); });
+$('#sortBtn').addEventListener('click', () => { UI.sort = UI.sort === 'desc' ? 'asc' : 'desc'; saveUI(); scheduleRender(); });
+$('#filters').addEventListener('click', e => { const b = e.target.closest('[data-st]'); if(b){ UI.status = b.dataset.st; saveUI(); scheduleRender(); } });
+$('.views').addEventListener('click', e => { const b = e.target.closest('[data-view]'); if(b){ UI.view = b.dataset.view; saveUI(); scheduleRender(); } });
+$('#list').addEventListener('change', e => {
+  const s = e.target.closest('.status-sel'); if(!s) return;
+  const id = s.dataset.sid; const t = S.tasks.get(id); if(!t) return;
+  saveTaskRemote(id, { ...clone(t), status:s.value, updatedAt:Date.now() });
+});
+$('#list').addEventListener('click', e => {
+  if(e.target.closest('[data-act="new"]')){ openEditor(null); return; }
+  if(e.target.closest('select') || e.target.closest('a')) return;
+  const chip = e.target.closest('.chip[data-ref]'); if(chip){ e.stopPropagation(); openEntity(chip.dataset.ref); return; }
+  const row = e.target.closest('[data-id]'); if(row) openEditor(row.dataset.id);
+});
+$('#viewDir').addEventListener('click', async e => {
+  const it = e.target.closest('[data-ent]'); if(it){ openEntity(it.dataset.ent); return; }
+  if(e.target.id === 'addFile') await uploadFile();
+});
+$('#viewDir').addEventListener('submit', e => {
+  e.preventDefault(); const v = $('#addIn').value.trim(); if(!v) return;
+  if(UI.view === 'link') linkEntity(v);
+  else { const exists = [...S.entities.values()].some(en => en.type === UI.view && en.name.toLowerCase() === v.toLowerCase()); if(exists){ toast('“' + v + '” already exists.'); return; } createEntity(UI.view, v); }
+  $('#addIn').value = ''; toast('Added');
+});
+$('#scrim').addEventListener('click', () => {
+  if(!$('#modal').hidden){ closeSettings(); return; }
+  if(!$('#entity').hidden){ closeEntity(); return; }
+  closeEditor(false);
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    if(!POP.el.hidden){ closePop(); return; }
+    if(!$('#modal').hidden){ closeSettings(); return; }
+    if(!$('#entity').hidden){ closeEntity(); return; }
+    if(!$('#editor').hidden){ closeEditor(false); return; }
+  }
+  if((e.metaKey || e.ctrlKey) && e.key === 'Enter' && !$('#editor').hidden){ e.preventDefault(); saveEditor(); }
+});
+window.addEventListener('resize', () => { if(!POP.el.hidden) closePop(); });
+$('#edBody').addEventListener('scroll', () => { if(!POP.el.hidden) closePop(); }, { passive:true });
+
+/* Pick up changes made on your other devices */
+document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible') refresh(); });
+setInterval(() => { if(document.visibilityState === 'visible') refresh(); }, 60000);
+
+/* ---------- Toast ---------- */
+let toastT = 0;
+function toast(msg, ms = 3600){ const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, ms); }
+function toastLink(msg, label, url){ const t = $('#toast'); t.innerHTML = esc(msg) + ` <a href="${esc(safeUrl(url))}" target="_blank" rel="noopener">${esc(label)}</a>`; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 12000); }
+
+/* ---------- Start ---------- */
+(async function start(){
+  if(BACKEND !== 'graph'){
+    render();
+    $('#gate').hidden = false;
+    $('#gate .gate-card').innerHTML = '<h2>Almost ready</h2><p>Paste your <b>Client ID</b> and <b>Tenant ID</b> into lines 11 and 12 of <b>index.html</b> on GitHub, then reload this page (see the setup guide, Step 3).</p>'
+      + '<p>Redirect address to register in Microsoft Entra:</p><p><code class="addr">' + esc(location.origin + location.pathname) + '</code></p>';
+    return;
+  }
+  {
+    let acct = null;
+    try { acct = await authInit(); }
+    catch(e){ render(); showGate('Sign-in problem: ' + ((e && (e.errorMessage || e.message)) || 'unknown error')); return; }
+    if(!acct){ render(); showGate(); return; }
+  }
+  cacheLoad();
+  render();
+  refresh();
+})();
+})();
+</script>
+
+</body>
+</html>
